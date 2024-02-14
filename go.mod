@@ -1,4 +1,4 @@
-module github.com/restuwahyu13/gin-rest-api
+module github.com/lplanch/test-go-api
 
 go 1.16
 

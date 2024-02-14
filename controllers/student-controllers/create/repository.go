@@ -1,7 +1,7 @@
 package createStudent
 
 import (
-	model "github.com/restuwahyu13/gin-rest-api/models"
+	model "github.com/lplanch/test-go-api/models"
 	"gorm.io/gorm"
 )
 

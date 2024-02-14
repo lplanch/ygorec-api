@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	updateStudent "github.com/restuwahyu13/gin-rest-api/controllers/student-controllers/update"
-	util "github.com/restuwahyu13/gin-rest-api/utils"
+	updateStudent "github.com/lplanch/test-go-api/controllers/student-controllers/update"
+	util "github.com/lplanch/test-go-api/utils"
 	gpc "github.com/restuwahyu13/go-playground-converter"
 )
 

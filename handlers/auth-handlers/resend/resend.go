@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	resendAuth "github.com/restuwahyu13/gin-rest-api/controllers/auth-controllers/resend"
-	util "github.com/restuwahyu13/gin-rest-api/utils"
+	resendAuth "github.com/lplanch/test-go-api/controllers/auth-controllers/resend"
+	util "github.com/lplanch/test-go-api/utils"
 	gpc "github.com/restuwahyu13/go-playground-converter"
 	"github.com/sirupsen/logrus"
 )

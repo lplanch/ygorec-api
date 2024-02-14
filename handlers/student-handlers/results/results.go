@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	resultsStudent "github.com/restuwahyu13/gin-rest-api/controllers/student-controllers/results"
-	util "github.com/restuwahyu13/gin-rest-api/utils"
+	resultsStudent "github.com/lplanch/test-go-api/controllers/student-controllers/results"
+	util "github.com/lplanch/test-go-api/utils"
 )
 
 type handler struct {

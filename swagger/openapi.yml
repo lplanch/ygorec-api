@@ -1,15 +1,12 @@
 openapi: 3.0.0
 info:
-  version: 1.0.0
+  version: 0.0.1
   title: Go Gin Framework Rest API
   description: Example go using gin framework implementation rest api
   contact:
-    name: Restu Wahyu Saputra
-    url: https://github.com/restuwahyu13
-    email: restuwahyu13@gmail.com
-  license:
-    name: MIT
-    url: https://github.com/restuwahyu13/gin-rest-api/blob/main/README.md
+    name: Louis Plancher
+    url: https://github.com/lplanch
+    email: pro@lplanch.com
 servers:
   - url: 'http://{host}:4000/api/v1'
     description: go service api server endpoint application

@@ -7,9 +7,9 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
-	config "github.com/restuwahyu13/gin-rest-api/configs"
-	route "github.com/restuwahyu13/gin-rest-api/routes"
-	util "github.com/restuwahyu13/gin-rest-api/utils"
+	config "github.com/lplanch/test-go-api/configs"
+	route "github.com/lplanch/test-go-api/routes"
+	util "github.com/lplanch/test-go-api/utils"
 )
 
 func main() {
