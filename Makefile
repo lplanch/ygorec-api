@@ -1,6 +1,7 @@
 #================================
 #== DOCKER ENVIRONMENT
 #================================
+DOCKER := @docker
 COMPOSE := @docker-compose
 
 dcb:
@@ -26,13 +27,12 @@ dcd:
 #== GOLANG ENVIRONMENT
 #================================
 GO := @go
-GIN := @gin
 
 goinstall:
 	${GO} get .
 
 godev:
-	${GIN} -a 4000 -p 3001 -b bin/main run main.go
+	${GO} run main.go
 
 goprod:
 	${GO} build -o main .
