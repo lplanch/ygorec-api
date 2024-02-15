@@ -14,6 +14,10 @@ import (
 
 func main() {
 	/**
+	@description Utils initialisation
+	*/
+	util.InitUptime()
+	/**
 	@description Setup Server
 	*/
 	router := SetupRouter()
@@ -56,8 +60,7 @@ func SetupRouter() *gin.Engine {
 	/**
 	@description Init All Route
 	*/
-	route.InitAuthRoutes(db, router)
-	route.InitStudentRoutes(db, router)
+	route.InitMiscRoutes(db, router)
 
 	return router
 }
