@@ -6,20 +6,23 @@ import (
 	model "github.com/lplanch/test-go-api/models"
 	util "github.com/lplanch/test-go-api/utils"
 	"github.com/sirupsen/logrus"
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 func Connection() *gorm.DB {
 	databaseURI := make(chan string, 1)
+	config := gorm.Config{}
 
 	if os.Getenv("GO_ENV") != "production" {
 		databaseURI <- util.GodotEnv("DATABASE_URI_DEV")
+		config.Logger = logger.Default.LogMode(logger.Info)
 	} else {
 		databaseURI <- os.Getenv("DATABASE_URI_PROD")
 	}
 
-	db, err := gorm.Open(postgres.Open(<-databaseURI), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(<-databaseURI), &config)
 
 	if err != nil {
 		defer logrus.Info("Connection to Database Failed")
@@ -31,8 +34,7 @@ func Connection() *gorm.DB {
 	}
 
 	err = db.AutoMigrate(
-		&model.EntityUsers{},
-		&model.EntityStudent{},
+		&model.EntityCard{},
 	)
 
 	if err != nil {

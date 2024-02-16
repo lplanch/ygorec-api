@@ -36,7 +36,7 @@ require (
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gorm.io/driver/postgres v1.0.8
-	gorm.io/gorm v1.21.7
+	gorm.io/driver/sqlite v1.5.5
+	gorm.io/gorm v1.25.7-0.20240204074919-46816ad31dde
 	syreclabs.com/go/faker v1.2.3 // indirect
 )

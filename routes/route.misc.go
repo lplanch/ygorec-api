@@ -15,9 +15,14 @@ func InitMiscRoutes(db *gorm.DB, route *gin.Engine) {
 	getHealthcheckService := getHealthcheck.NewServiceGet()
 	healthcheckHandler := handlerGetHealthcheck.NewHandlerGetHealthcheck(getHealthcheckService)
 
+	// getVersionRepository := getVersion.NewRepositoryGet(db)
+	// getVersionService := getVersion.NewServiceGet(getVersionRepository)
+	// getVersionHandler := handlerGetVersion.NewHandlerGetVersion(getVersionService)
+
 	/**
 	@description All Misc Route
 	*/
 	groupRoute := route.Group("/api/v1")
 	groupRoute.GET("/health", healthcheckHandler.HealthcheckHandler)
+	// groupRoute.GET("/version", getVersionHandler.VersionHandler)
 }
