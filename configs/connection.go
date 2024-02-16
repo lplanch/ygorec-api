@@ -35,6 +35,13 @@ func Connection() *gorm.DB {
 
 	err = db.AutoMigrate(
 		&model.EntityCard{},
+		&model.EnumRule{},
+		&model.EnumAttribute{},
+		&model.EnumLevel{},
+		&model.EnumCategory{},
+		&model.EnumRace{},
+		&model.EnumType{},
+		&model.EnumArchetype{},
 	)
 
 	if err != nil {
