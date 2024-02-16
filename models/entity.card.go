@@ -4,6 +4,8 @@ type EntityCard struct {
 	ID        uint32 `gorm:"type:INTEGER PRIMARYKEY"`
 	Name      string `gorm:"type:TEXT;NOT NULL"`
 	Desc      string `gorm:"type:TEXT;NOT NULL"`
+	Ot        uint32 `gorm:"type:INTEGER;NOT NULL"`
+	Alias     uint32 `gorm:"type:INTEGER;NOT NULL"`
 	SetCode   uint32 `gorm:"type:INTEGER;NOT NULL"`
 	Type      uint32 `gorm:"type:INTEGER;NOT NULL"`
 	Atk       uint32 `gorm:"type:INTEGER;NOT NULL"`

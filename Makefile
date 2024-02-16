@@ -42,3 +42,14 @@ gotest:
 
 goformat:
 	${GO} fmt ./...
+
+#================================
+#== SCRIPTS
+#================================
+
+FETCH_CARDS := ./scripts/fetch_cards.sh
+
+upsert-data:
+	${FETCH_CARDS}
+
+.PHONY: dcb dcuf dcubf dcu dcd goinstall godev goprod gotest goformat upsert-data
