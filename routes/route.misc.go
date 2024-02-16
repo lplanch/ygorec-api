@@ -22,7 +22,7 @@ func InitMiscRoutes(db *gorm.DB, route *gin.Engine) {
 	/**
 	@description All Misc Route
 	*/
-	groupRoute := route.Group("/api/v1")
+	groupRoute := route.Group("/api")
 	groupRoute.GET("/health", healthcheckHandler.HealthcheckHandler)
 	// groupRoute.GET("/version", getVersionHandler.VersionHandler)
 }

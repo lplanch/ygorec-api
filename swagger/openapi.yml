@@ -8,7 +8,7 @@ info:
     url: https://github.com/lplanch
     email: pro@lplanch.com
 servers:
-  - url: 'http://{host}:4000/api/v1'
+  - url: 'http://{host}:4000/api'
     description: go service api server endpoint application
     variables:
       host:
