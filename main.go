@@ -61,6 +61,7 @@ func SetupRouter() *gin.Engine {
 	@description Init All Route
 	*/
 	route.InitMiscRoutes(db, router)
+	route.InitCardRoutes(db, router)
 
 	return router
 }

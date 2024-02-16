@@ -1,14 +1,14 @@
 package model
 
 type ModelCard struct {
-	ID         uint32
+	ID         uint64
 	Name       string
 	Desc       string
 	Archetypes []string
 	Type       string
-	Atk        uint32
-	Def        uint32
-	Level      uint32
+	Atk        uint64
+	Def        uint64
+	Level      uint64
 	Race       string
 	Attribute  string
 	Category   []string
