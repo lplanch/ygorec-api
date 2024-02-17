@@ -4,12 +4,31 @@ type ModelCard struct {
 	ID         uint64
 	Name       string
 	Desc       string
-	Archetypes []string
-	Type       string
-	Atk        uint64
-	Def        uint64
-	Level      uint64
-	Race       string
 	Attribute  string
-	Category   []string
+	Types      []string
+	Race       string
+	Archetypes []string
+	Atk        int64
+	Def        int64
+	Level      string
+	Categories []string
+}
+
+type ModelDbCard struct {
+	ID         uint64
+	Name       string
+	Desc       string
+	Attribute  string
+	Types      string
+	Race       string
+	Archetypes string
+	Atk        int64
+	Def        int64
+	Level      string
+	Categories string
+}
+
+type ModelListCard struct {
+	ID   uint64
+	Name string
 }

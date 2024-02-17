@@ -53,8 +53,10 @@ def get_cards_info():
                 current_key = None
         elif current_key != None:
             [id, value] = line.split(None, 1)
-            parsed_data[current_key].append(
-                {'id': int(id, 16), 'value': value})
+            int_id = int(id, 16)
+            if int_id != 0:
+                parsed_data[current_key].append(
+                    {'id': int(id, 16), 'value': value.strip()})
     return parsed_data
 
 
