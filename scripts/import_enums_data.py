@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 import collections
+import datetime
 import os
 import subprocess
 import sys
 import sqlite3
 import requests
 
-KV_BABELCDB_LAST_COMMIT = "enum_commit"
+KV_ENUMS_LAST_COMMIT = "enums_commit"
 git_repo = 'https://github.com/NaimSantos/DataEditorX.git'
 cardinfo_uri = 'https://raw.githubusercontent.com/NaimSantos/DataEditorX/master/DataEditorX/data/cardinfo_english.txt'
 dict_enums = {
@@ -67,7 +68,11 @@ def update_kv_babelcdb_commit(commit_str, db_path):
     con = sqlite3.connect(db_path)
     con.execute(
         "INSERT INTO key_value_stores (key, value) VALUES(:key, :value) ON CONFLICT(key) DO UPDATE SET value=excluded.value;", {
-            "key": KV_BABELCDB_LAST_COMMIT, "value": commit_str}
+            "key": KV_ENUMS_LAST_COMMIT, "value": commit_str}
+    )
+    con.execute(
+        "INSERT INTO key_value_stores (key, value) VALUES('enums_version_date', :value) ON CONFLICT(key) DO UPDATE SET value=excluded.value;",
+        {"value": datetime.datetime.now(datetime.timezone.utc).isoformat()}
     )
     con.commit()
     con.close()

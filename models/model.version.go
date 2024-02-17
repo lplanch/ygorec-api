@@ -4,7 +4,8 @@ import "time"
 
 type StaticVersion struct {
 	CardsLastCommit string
-	EnumLastCommit  string
-	LastUpdate      time.Time
+	EnumsLastCommit string
+	CardsLastUpdate time.Time
+	EnumsLastUpdate time.Time
 	CardsAmount     uint32
 }

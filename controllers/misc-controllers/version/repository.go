@@ -24,7 +24,7 @@ func (r *repository) GetVersionRepository() (*[]model.KeyValueStore, string) {
 	db := r.db.Model(&kv)
 	errorCode := make(chan string, 1)
 
-	getKv := db.Debug().Where("key = ?", util.KV_ENUM_LAST_COMMIT).Or("key = ?", util.KV_BABELCDB_LAST_COMMIT).Or("key = ?", util.KV_VERSION_DATE).Find(&kv)
+	getKv := db.Debug().Where("key = ?", util.KV_ENUMS_LAST_COMMIT).Or("key = ?", util.KV_BABELCDB_LAST_COMMIT).Or("key = ?", util.KV_ENUMS_VERSION_DATE).Or("key = ?", util.KV_BABELCDB_VERSION_DATE).Find(&kv)
 
 	if getKv.RowsAffected < 1 {
 		errorCode <- "VERSION_NOT_FOUND_500"
