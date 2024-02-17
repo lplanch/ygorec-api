@@ -23,8 +23,6 @@ services:
         rmdir /tmp/healthcheck
         cls
       timeout: 60ms
-    env_file:
-      - .env
     environment:
       - DATABASE_URI_PROD=/tmp/ygorec-data.db
     ports:
