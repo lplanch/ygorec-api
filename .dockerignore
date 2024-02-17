@@ -3,3 +3,5 @@ bin/
 README.md
 main
 openapi.yml
+ygorec-data.db
+**/BabelCDB
