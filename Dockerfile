@@ -26,8 +26,12 @@ RUN apt-get update \
   && apt-get install -y \
   make \
   vim \
-  build-essential
+  build-essential \
+  git \
+  python3 python3-requests \
+  sqlite3 libsqlite3-dev
 COPY --from=builder . ./usr/src/app
+RUN make upsert-data
 RUN make goprod
 EXPOSE 4000
 CMD ["./main"]
