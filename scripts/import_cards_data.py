@@ -3,10 +3,14 @@
 import os
 import sys
 import sqlite3
+import subprocess
 
+KV_BABELCDB_LAST_COMMIT = "babelcdb_commit"
 to_import = ['cards.cdb']
 db_path = os.path.realpath(os.path.dirname(
     os.path.realpath(__file__)) + '/../ygorec-data.db')
+babelcdb_path = os.path.realpath(os.path.dirname(
+    os.path.realpath(__file__)) + '/BabelCDB')
 
 
 def rename_tables(name):
@@ -37,6 +41,20 @@ def merge_tables(full_path):
     con.close()
 
 
+def update_kv_babelcdb_commit(commit_str):
+    con = sqlite3.connect(db_path)
+    con.execute(
+        "INSERT INTO key_value_stores (key, value) VALUES(:key, :value) ON CONFLICT(key) DO UPDATE SET value=excluded.value;", {
+            "key": KV_BABELCDB_LAST_COMMIT, "value": commit_str}
+    )
+    con.commit()
+    con.close()
+
+
+def git_rev_parse(path) -> str:
+    return subprocess.check_output(['git', '-C', path, 'rev-parse', 'HEAD']).decode('ascii').strip()
+
+
 def main() -> int:
     path = sys.argv[1] if len(sys.argv) > 1 else "BabelCDB/"
 
@@ -44,6 +62,7 @@ def main() -> int:
         full_path = os.path.realpath((path + filename))
         rename_tables(full_path)
         merge_tables(full_path)
+    update_kv_babelcdb_commit(git_rev_parse(babelcdb_path))
     return 0
 
 

@@ -1,7 +1,7 @@
 package model
 
 type EntityCard struct {
-	ID        uint64 `gorm:"type:INTEGER PRIMARYKEY"`
+	ID        uint64 `gorm:"type:INTEGER PRIMARY KEY"`
 	Ot        uint64 `gorm:"type:INTEGER"`
 	Alias     uint64 `gorm:"type:INTEGER"`
 	SetCode   uint64 `gorm:"type:INTEGER"`
