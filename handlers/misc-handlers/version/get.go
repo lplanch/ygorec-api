@@ -16,13 +16,15 @@ func NewHandlerGetVersion(service getVersion.Service) *handler {
 	return &handler{service: service}
 }
 
-func (h *handler) ResultStudentHandler(ctx *gin.Context) {
+func (h *handler) GetVersionHandler(ctx *gin.Context) {
 
-	resultStudent, errResultStudent := h.service.GetVersionService()
+	getVersion, errGetVersion := h.service.GetVersionService()
 
-	switch errResultStudent {
+	switch errGetVersion {
 
+	case "VERSION_NOT_FOUND_500":
+		util.APIResponse(ctx, "Version not found", http.StatusInternalServerError, http.MethodGet, nil)
 	default:
-		util.APIResponse(ctx, "Get version data success", http.StatusOK, http.MethodGet, resultStudent)
+		util.APIResponse(ctx, "Get version data success", http.StatusOK, http.MethodGet, getVersion)
 	}
 }

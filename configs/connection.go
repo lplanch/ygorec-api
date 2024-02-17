@@ -34,6 +34,7 @@ func Connection() *gorm.DB {
 	}
 
 	err = db.AutoMigrate(
+		&model.KeyValueStore{},
 		&model.EntityCard{},
 		&model.EnumRule{},
 		&model.EnumAttribute{},
