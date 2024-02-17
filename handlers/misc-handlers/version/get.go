@@ -4,55 +4,27 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	resultStudent "github.com/lplanch/test-go-api/controllers/student-controllers/result"
+	getVersion "github.com/lplanch/test-go-api/controllers/misc-controllers/version"
 	util "github.com/lplanch/test-go-api/utils"
-	gpc "github.com/restuwahyu13/go-playground-converter"
 )
 
 type handler struct {
-	service resultStudent.Service
+	service getVersion.Service
 }
 
-func NewHandlerResultStudent(service resultStudent.Service) *handler {
+func NewHandlerGetVersion(service getVersion.Service) *handler {
 	return &handler{service: service}
 }
 
-func (h *handler) ResultStudentHandler(ctx *gin.Context) {
+func (h *handler) GetVersionHandler(ctx *gin.Context) {
 
-	var input resultStudent.InputResultStudent
-	input.ID = ctx.Param("id")
+	getVersion, errGetVersion := h.service.GetVersionService()
 
-	config := gpc.ErrorConfig{
-		Options: []gpc.ErrorMetaConfig{
-			gpc.ErrorMetaConfig{
-				Tag:     "required",
-				Field:   "ID",
-				Message: "id is required on param",
-			},
-			gpc.ErrorMetaConfig{
-				Tag:     "uuid",
-				Field:   "ID",
-				Message: "params must be uuid format",
-			},
-		},
-	}
+	switch errGetVersion {
 
-	errResponse, errCount := util.GoValidator(&input, config.Options)
-
-	if errCount > 0 {
-		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodGet, errResponse)
-		return
-	}
-
-	resultStudent, errResultStudent := h.service.ResultStudentService(&input)
-
-	switch errResultStudent {
-
-	case "RESULT_STUDENT_NOT_FOUND_404":
-		util.APIResponse(ctx, "Student data is not exist or deleted", http.StatusNotFound, http.MethodGet, nil)
-		return
-
+	case "VERSION_NOT_FOUND_500":
+		util.APIResponse(ctx, "Version not found", http.StatusInternalServerError, http.MethodGet, nil)
 	default:
-		util.APIResponse(ctx, "Result Student data successfully", http.StatusOK, http.MethodGet, resultStudent)
+		util.APIResponse(ctx, "Get version data success", http.StatusOK, http.MethodGet, getVersion)
 	}
 }

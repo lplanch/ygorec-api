@@ -2,7 +2,7 @@
 #  GO FIRST STAGE
 # ======================
 
-FROM golang:latest as builder
+FROM --platform=linux/amd64 golang:latest as builder
 USER ${USER}
 WORKDIR /usr/src/app
 COPY go.mod \
@@ -12,7 +12,7 @@ COPY . ./
 ENV GO111MODULE="on" \
   GOARCH="amd64" \
   GOOS="linux" \
-  CGO_ENABLED="0"
+  CGO_ENABLED="1"
 RUN apt-get clean \
   && apt-get remove
 

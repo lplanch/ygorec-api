@@ -1,3 +1,5 @@
 bin
 .env
 main
+ygorec-data.db
+**/BabelCDB
