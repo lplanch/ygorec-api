@@ -38,7 +38,6 @@ func (s *service) GetVersionService() (*model.StaticVersion, string) {
 	getVersion.CardsLastCommit = (*listKeyValue)[j].Value
 	getVersion.EnumsLastUpdate, _ = time.Parse(time.RFC3339, (*listKeyValue)[k].Value)
 	getVersion.CardsLastUpdate, _ = time.Parse(time.RFC3339, (*listKeyValue)[l].Value)
-	getVersion.CardsAmount = 10
 
 	return &getVersion, errGetVersion
 }

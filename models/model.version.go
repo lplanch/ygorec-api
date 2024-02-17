@@ -7,5 +7,4 @@ type StaticVersion struct {
 	EnumsLastCommit string
 	CardsLastUpdate time.Time
 	EnumsLastUpdate time.Time
-	CardsAmount     uint32
 }
