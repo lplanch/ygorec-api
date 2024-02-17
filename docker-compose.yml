@@ -26,7 +26,7 @@ services:
     env_file:
       - .env
     environment:
-      - DATABASE_URI_PROD=./ygorec-data.db
+      - DATABASE_URI_PROD=/tmp/ygorec-data.db
     ports:
       - 4000:4000
     networks:

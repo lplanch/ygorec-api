@@ -84,13 +84,11 @@ def get_last_commit() -> str:
 
 def main() -> int:
     print('Importing enums from the web...')
-    path = sys.argv[1] if len(sys.argv) > 1 else "/../ygorec-data.db"
-    db_path = os.path.realpath(os.path.dirname(
-        os.path.realpath(__file__)) + path)
+    path = sys.argv[1] if len(sys.argv) > 1 else "/tmp/ygorec-data.db"
 
     parsed_data = get_cards_info()
-    update_enums(db_path, parsed_data)
-    update_kv_babelcdb_commit(get_last_commit(), db_path)
+    update_enums(path, parsed_data)
+    update_kv_babelcdb_commit(get_last_commit(), path)
     return 0
 
 
