@@ -23,8 +23,6 @@ func (h *handler) GetCardHandler(ctx *gin.Context) {
 	var input getCard.InputGetCard
 	input.ID = ctx.Param("id")
 
-	println("salut")
-
 	config := gpc.ErrorConfig{
 		Options: []gpc.ErrorMetaConfig{
 			{
