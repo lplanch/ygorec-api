@@ -31,9 +31,9 @@ RUN apt-get update \
   python3 python3-requests \
   sqlite3 libsqlite3-dev
 COPY --from=builder . ./usr/src/app
-ARG BABELCDB_PATH
-ARG DATABASE_PATH
-RUN make upsert-data
+ARG PORT=4000
+ARG BABELCDB_PATH=./data/BabelCDB
+ARG DATABASE_PATH=./data/ygorec-data.db
 RUN make goprod
-EXPOSE 4000
-CMD ["./main"]
+EXPOSE $PORT
+CMD ["sh", "-c", "make upsert-data && ./main"]
