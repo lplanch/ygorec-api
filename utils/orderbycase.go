@@ -32,6 +32,13 @@ func (orderByCase OrderByCase) Build(builder clause.Builder) {
 	} else if orderByCase.Asc {
 		builder.WriteString(" ASC")
 	}
+	builder.WriteString(", ")
+	builder.WriteQuoted(orderByCase.Column)
+	if orderByCase.Desc {
+		builder.WriteString(" DESC")
+	} else if orderByCase.Asc {
+		builder.WriteString(" ASC")
+	}
 }
 
 // MergeClause merge order by clauses
