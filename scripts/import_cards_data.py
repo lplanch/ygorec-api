@@ -8,7 +8,8 @@ import subprocess
 
 KV_BABELCDB_LAST_COMMIT = "babelcdb_commit"
 to_import = ['cards.cdb']
-db_path = '/tmp/ygorec-data.db'
+db_path = os.path.realpath(os.path.dirname(
+    os.path.realpath(__file__)) + '/../ygorec-data.db')
 babelcdb_path = '/tmp/BabelCDB/'
 
 

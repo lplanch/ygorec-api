@@ -7,8 +7,8 @@ if [ -d "/tmp/BabelCDB" ]; then
     echo "BabelCDB found, fetching new data..."
     git -C /tmp/BabelCDB/ checkout master
     git -C /tmp/BabelCDB/ fetch
-    if [[ $(git -C /tmp/BabelCDB/ diff HEAD...origin/master) ]] || !([ -d "/tmp/ygorec-data.db" ]); then
-        # if there is changes or if /tmp/ygorec-data.db is not found, pull them and import the db
+    if [[ $(git -C /tmp/BabelCDB/ diff HEAD...origin/master) ]] || !([ -d "${SCRIPT_DIR}/ygorec-data.db" ]); then
+        # if there is changes or if ${SCRIPT_DIR}/ygorec-data.db is not found, pull them and import the db
         git -C /tmp/BabelCDB/ pull
         echo "Importing new card data..."
         go run ${SCRIPT_DIR}/setup_database.go
