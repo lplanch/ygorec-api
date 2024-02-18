@@ -15,7 +15,7 @@ func Connection() *gorm.DB {
 	databaseURI := make(chan string, 1)
 	config := gorm.Config{}
 
-	if os.Getenv("GO_ENV") != "production" {
+	if os.Getenv("RAILWAY_ENVIRONMENT_NAME") != "production" {
 		databaseURI <- util.GodotEnv("DATABASE_PATH")
 		config.Logger = logger.Default.LogMode(logger.Info)
 	} else {
@@ -29,7 +29,7 @@ func Connection() *gorm.DB {
 		logrus.Fatal(err.Error())
 	}
 
-	if os.Getenv("GO_ENV") != "production" {
+	if os.Getenv("RAILWAY_ENVIRONMENT_NAME") != "production" {
 		logrus.Info("Connection to Database Successfully")
 	}
 
