@@ -16,7 +16,6 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.6.4
 	golang.org/x/crypto v0.19.0
-	gorm.io/driver/mysql v1.5.4
 	gorm.io/gorm v1.25.7-0.20240204074919-46816ad31dde
 	syreclabs.com/go/faker v1.2.3
 )
@@ -31,7 +30,6 @@ require (
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20210420193930-a4630ec28c79 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
