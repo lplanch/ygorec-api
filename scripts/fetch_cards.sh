@@ -27,7 +27,7 @@ else
     # upsert the database
     echo "Repository ready, importing card data..."
     go run ${SCRIPT_DIR}/setup_database.go
-    mkdir -p /tmp/ygorec_cards_data/ && cp ${BABELCDB_PATH}/*.cdb /tmp/ygorec_cards_data/
+    mkdir -p /tmp/ygorec_cards_data/ && cp $BABELCDB_PATH/*.cdb /tmp/ygorec_cards_data/
     ${SCRIPT_DIR}/import_cards_data.py /tmp/ygorec_cards_data/
     rm -f /tmp/ygorec_cards_data/*.cdb
 fi
