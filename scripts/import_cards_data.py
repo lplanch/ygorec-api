@@ -8,9 +8,16 @@ import subprocess
 
 KV_BABELCDB_LAST_COMMIT = "babelcdb_commit"
 to_import = ['cards.cdb']
-db_path = os.path.realpath(os.path.dirname(
-    os.path.realpath(__file__)) + '/../ygorec-data.db')
-babelcdb_path = '/tmp/BabelCDB/'
+
+db_path = os.environ['DATABASE_PATH']
+if db_path == None:
+    print('DATABASE_PATH not found')
+    exit(1)
+
+babelcdb_path = os.environ['BABELCDB_PATH']
+if db_path == None:
+    print('BABELCDB_PATH not found')
+    exit(1)
 
 
 def rename_tables(name):
@@ -60,7 +67,7 @@ def git_rev_parse(path) -> str:
 
 
 def main() -> int:
-    path = sys.argv[1] if len(sys.argv) > 1 else babelcdb_path
+    path = sys.argv[1] if len(sys.argv) > 1 else "/tmp/ygorec_cards_data/"
 
     for filename in to_import:
         full_path = os.path.realpath((path + filename))

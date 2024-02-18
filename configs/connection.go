@@ -16,10 +16,10 @@ func Connection() *gorm.DB {
 	config := gorm.Config{}
 
 	if os.Getenv("GO_ENV") != "production" {
-		databaseURI <- util.GodotEnv("DATABASE_URI_DEV")
+		databaseURI <- util.GodotEnv("DATABASE_PATH")
 		config.Logger = logger.Default.LogMode(logger.Info)
 	} else {
-		databaseURI <- os.Getenv("DATABASE_URI_PROD")
+		databaseURI <- os.Getenv("DATABASE_PATH")
 	}
 
 	db, err := gorm.Open(sqlite.Open(<-databaseURI), &config)

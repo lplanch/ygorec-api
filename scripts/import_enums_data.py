@@ -64,7 +64,7 @@ def get_cards_info():
     return parsed_data
 
 
-def update_kv_babelcdb_commit(commit_str, db_path):
+def update_kv_dataeditorx_commit(commit_str, db_path):
     con = sqlite3.connect(db_path)
     con.execute(
         "INSERT INTO key_value_stores (key, value) VALUES(:key, :value) ON CONFLICT(key) DO UPDATE SET value=excluded.value;", {
@@ -84,12 +84,11 @@ def get_last_commit() -> str:
 
 def main() -> int:
     print('Importing enums from the web...')
-    path = sys.argv[1] if len(sys.argv) > 1 else os.path.realpath(
-        os.path.dirname(os.path.realpath(__file__)) + '/../ygorec-data.db')
+    path = sys.argv[1] if len(sys.argv) > 1 else os.environ['DATABASE_PATH']
 
     parsed_data = get_cards_info()
     update_enums(path, parsed_data)
-    update_kv_babelcdb_commit(get_last_commit(), path)
+    update_kv_dataeditorx_commit(get_last_commit(), path)
     return 0
 
 

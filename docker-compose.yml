@@ -24,7 +24,8 @@ services:
         cls
       timeout: 60ms
     environment:
-      - DATABASE_URI_PROD=./ygorec-data.db
+      - DATABASE_PATH=./data/ygorec-data.db
+      - BABELCDB_PATH=./data/BabelCDB/
     ports:
       - 4000:4000
     networks:
