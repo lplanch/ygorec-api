@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitCardRoutes(db *gorm.DB, route *gin.Engine) {
+func InitCardsRoutes(db *gorm.DB, route *gin.Engine) {
 
 	/**
 	@description All Handler Misc
@@ -21,5 +21,5 @@ func InitCardRoutes(db *gorm.DB, route *gin.Engine) {
 	@description All Misc Route
 	*/
 	groupRoute := route.Group("/api")
-	groupRoute.GET("/card/:id", getCardHandler.GetCardHandler)
+	groupRoute.GET("/cards/:id", getCardHandler.GetCardHandler)
 }

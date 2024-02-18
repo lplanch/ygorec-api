@@ -39,6 +39,7 @@ func SetupRouter() *gin.Engine {
 	/**
 	@description Setup Mode Application
 	*/
+	println(util.GodotEnv("RAILWAY_ENVIRONMENT_NAME"))
 	if util.GodotEnv("RAILWAY_ENVIRONMENT_NAME") != "production" && util.GodotEnv("RAILWAY_ENVIRONMENT_NAME") != "test" {
 		gin.SetMode(gin.DebugMode)
 	} else if util.GodotEnv("RAILWAY_ENVIRONMENT_NAME") == "test" {
@@ -61,7 +62,7 @@ func SetupRouter() *gin.Engine {
 	@description Init All Route
 	*/
 	route.InitMiscRoutes(db, router)
-	route.InitCardRoutes(db, router)
+	route.InitCardsRoutes(db, router)
 
 	return router
 }
