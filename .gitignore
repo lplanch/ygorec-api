@@ -3,3 +3,4 @@ bin
 main
 ygorec-data.db
 **/BabelCDB
+**/.DS_Store
