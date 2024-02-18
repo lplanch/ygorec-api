@@ -104,7 +104,7 @@ paths:
                   description: Integer ID of the card to get
             responses:
                 "200":
-                    description: Version successful
+                    description: Success
                     content:
                         application/json:
                             schema:
@@ -121,6 +121,52 @@ paths:
                                         type: string
                                     Data:
                                         $ref: "#/components/schemas/Card"
+                                required:
+                                    - StatusCode
+                                    - Method
+                                    - Message
+                                    - Data
+                "404":
+                    description: Card not found
+                "500":
+                    description: Could not get API imported data
+    ############################
+    ## GET CARD ENDPOINT
+    ############################
+    /typeahead:
+        get:
+            tags:
+                - Cards
+            summary: Search cards for autocompletion
+            parameters:
+                - in: query
+                  name: q
+                  schema:
+                      type: string
+                      example: "raigeki"
+                  required: true
+                  description: Search string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    StatusCode:
+                                        type: integer
+                                        format: number
+                                        example: 200
+                                    Method:
+                                        type: string
+                                        example: GET
+                                    Message:
+                                        type: string
+                                    Data:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/CardMini"
                                 required:
                                     - StatusCode
                                     - Method
@@ -229,3 +275,20 @@ components:
                 - Def
                 - Level
                 - Categories
+        CardMini:
+            properties:
+                ID:
+                    type: integer
+                    example: 32864
+                    description: Card ID
+                Label:
+                    type: string
+                    example: "The 13th Grave"
+                Url:
+                    type: string
+                    example: "/cards/32864"
+                    description: Endpoint of the card
+            required:
+                - ID
+                - Label
+                - Url
