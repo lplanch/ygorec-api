@@ -1,236 +1,294 @@
 openapi: 3.0.0
 info:
-  version: 0.0.1
-  title: YGOREC Rest API
-  contact:
-    name: Louis Plancher
-    url: https://github.com/lplanch
-    email: pro@lplanch.com
+    version: 0.0.1
+    title: Go Gin Framework Rest API
+    description: Example go using gin framework implementation rest api
+    contact:
+        name: Louis Plancher
+        url: https://github.com/lplanch
+        email: pro@lplanch.com
 servers:
-  - url: '{host}/api'
-    description: Service api server endpoint application
-    variables:
-      host:
-        default: https://ygorec.up.railway.app
-        enum:
-          - https://ygorec.up.railway.app
-          - http://localhost:4000
+    - url: "http://{host}:4000/api"
+      description: go service api server endpoint application
+      variables:
+          host:
+              default: localhost
+              enum:
+                  - localhost
 paths:
-  ############################
-  ## HEALTHCHECK ENDPOINT
-  ############################
-  /health:
-    get:
-      tags:
-        - Misc
-      summary: Healthcheck endpoint
-      description: Check the state of the API
-      responses:
-        '200':
-          description: Healthcheck successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  StatusCode:
-                    type: integer
-                    format: number
-                    example: 200
-                  Method:
-                    type: string
-                    example: GET
-                  Message:
-                    type: string
-                  Data:
-                    $ref: '#/components/schemas/Health'
-                required:
-                  - StatusCode
-                  - Method
-                  - Message
-                  - Data
-        '500':
-          description: Could not get API healthcheck
-  ############################
-  ## VERSION ENDPOINT
-  ############################
-  /version:
-    get:
-      tags:
-        - Misc
-      summary: Version endpoint
-      description: Check the versions imported of the API
-      responses:
-        '200':
-          description: Version successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  StatusCode:
-                    type: integer
-                    format: number
-                    example: 200
-                  Method:
-                    type: string
-                    example: GET
-                  Message:
-                    type: string
-                  Data:
-                    $ref: '#/components/schemas/Version'
-                required:
-                  - StatusCode
-                  - Method
-                  - Message
-                  - Data
-        '500':
-          description: Could not get API imported data
-  ############################
-  ## GET CARD ENDPOINT
-  ############################
-  /card/{card_id}:
-    get:
-      tags:
-        - Cards
-      summary: Get a card from id
-      parameters:
-        - in: path
-          name: card_id
-          schema:
-            type: integer
-            example: 32864
-          required: true
-          description: Integer ID of the card to get
-      responses:
-        '200':
-          description: Version successful
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  StatusCode:
-                    type: integer
-                    format: number
-                    example: 200
-                  Method:
-                    type: string
-                    example: GET
-                  Message:
-                    type: string
-                  Data:
-                    $ref: '#/components/schemas/Card'
-                required:
-                  - StatusCode
-                  - Method
-                  - Message
-                  - Data
-        '500':
-          description: Could not get API imported data
-  #################################
-  #################################
-  ## COMPONENTS AUTH TERITORY
-  #################################
-  #################################
+    ############################
+    ## HEALTHCHECK ENDPOINT
+    ############################
+    /health:
+        get:
+            tags:
+                - Misc
+            summary: Healthcheck endpoint
+            description: Check the state of the API
+            responses:
+                "200":
+                    description: Healthcheck successful
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    StatusCode:
+                                        type: integer
+                                        format: number
+                                        example: 200
+                                    Method:
+                                        type: string
+                                        example: GET
+                                    Message:
+                                        type: string
+                                    Data:
+                                        $ref: "#/components/schemas/Health"
+                                required:
+                                    - StatusCode
+                                    - Method
+                                    - Message
+                                    - Data
+                "500":
+                    description: Could not get API healthcheck
+    ############################
+    ## VERSION ENDPOINT
+    ############################
+    /version:
+        get:
+            tags:
+                - Misc
+            summary: Version endpoint
+            description: Check the versions imported of the API
+            responses:
+                "200":
+                    description: Version successful
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    StatusCode:
+                                        type: integer
+                                        format: number
+                                        example: 200
+                                    Method:
+                                        type: string
+                                        example: GET
+                                    Message:
+                                        type: string
+                                    Data:
+                                        $ref: "#/components/schemas/Version"
+                                required:
+                                    - StatusCode
+                                    - Method
+                                    - Message
+                                    - Data
+                "500":
+                    description: Could not get API imported data
+    ############################
+    ## GET CARD ENDPOINT
+    ############################
+    /cards/{card_id}:
+        get:
+            tags:
+                - Cards
+            summary: Get a card from id
+            parameters:
+                - in: path
+                  name: card_id
+                  schema:
+                      type: integer
+                      example: 32864
+                  required: true
+                  description: Integer ID of the card to get
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    StatusCode:
+                                        type: integer
+                                        format: number
+                                        example: 200
+                                    Method:
+                                        type: string
+                                        example: GET
+                                    Message:
+                                        type: string
+                                    Data:
+                                        $ref: "#/components/schemas/Card"
+                                required:
+                                    - StatusCode
+                                    - Method
+                                    - Message
+                                    - Data
+                "404":
+                    description: Card not found
+                "500":
+                    description: Could not get API imported data
+    ############################
+    ## GET CARD ENDPOINT
+    ############################
+    /typeahead:
+        get:
+            tags:
+                - Cards
+            summary: Search cards for autocompletion
+            parameters:
+                - in: query
+                  name: q
+                  schema:
+                      type: string
+                      example: "raigeki"
+                  required: true
+                  description: Search string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    StatusCode:
+                                        type: integer
+                                        format: number
+                                        example: 200
+                                    Method:
+                                        type: string
+                                        example: GET
+                                    Message:
+                                        type: string
+                                    Data:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/CardMini"
+                                required:
+                                    - StatusCode
+                                    - Method
+                                    - Message
+                                    - Data
+                "500":
+                    description: Could not get API imported data
+    #################################
+    #################################
+    ## COMPONENTS AUTH TERITORY
+    #################################
+    #################################
 components:
-  schemas:
-    Health:
-      properties:
-        Status:
-          type: string
-          example: "Available"
-        Uptime:
-          type: number
-          example: 1294231
-          description: API uptime in milliseconds
-        Date:
-          type: string
-          example: "2024-02-16T10:37:42.452213+01:00"
-          description: Current date
-      required:
-        - Status
-        - Uptime
-        - Date
-    Version:
-      properties:
-        CardsLastCommit:
-          type: string
-          example: "19d4483a7da1ffd8d2d786f1f7727d9b58b80236"
-          description: Current commit hash of cards pulled from git
-        EnumsLastCommit:
-          type: string
-          example: "a084b423f2da4ffab32147d9b47163ca57885171"
-          description: Current commit hash of enums pulled from git
-        CardsLastUpdate:
-          type: string
-          example: "2024-02-16T10:37:42.452213+01:00"
-          description: Last update date of cards
-        EnumsLastUpdate:
-          type: string
-          example: "2024-02-16T10:37:42.452213+01:00"
-          description: Last update date of enums
-      required:
-        - CardsLastCommit
-        - EnumsLastCommit
-        - CardsLastUpdate
-        - EnumsLastUpdate
-    Card:
-      properties:
-        ID:
-          type: integer
-          example: 32864
-          description: Card ID
-        Name:
-          type: string
-          example: "The 13th Grave"
-        Desc:
-          type: string
-          example: "A zombie that suddenly appeared from plot #13 - an empty grave."
-          description: Description of the card (flavor or effect)
-        Attribute:
-          type: string
-          example: "DARK"
-        Types:
-          type: array
-          items:
-            type: string
-            example: ["Monster", "Effect"]
-        Race:
-          type: string
-          example: "Zombie"
-        Archetypes:
-          type: array
-          items:
-            type: string
-        Atk:
-          type: integer
-          example: 1200
-        Def:
-          type: integer
-          example: 900
-        Level:
-          type: string
-          example: "3★"
-        Categories:
-          type: array
-          items:
-            type: string
-            example: []
-      required:
-        - ID
-        - Name
-        - Desc
-        - Attribute
-        - Types
-        - Race
-        - Archetypes
-        - Atk
-        - Def
-        - Level
-        - Categories
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+    schemas:
+        Health:
+            properties:
+                Status:
+                    type: string
+                    example: "Available"
+                Uptime:
+                    type: number
+                    example: 1294231
+                    description: API uptime in milliseconds
+                Date:
+                    type: string
+                    example: "2024-02-16T10:37:42.452213+01:00"
+                    description: Current date
+            required:
+                - Status
+                - Uptime
+                - Date
+        Version:
+            properties:
+                CardsLastCommit:
+                    type: string
+                    example: "19d4483a7da1ffd8d2d786f1f7727d9b58b80236"
+                    description: Current commit hash of cards pulled from git
+                EnumsLastCommit:
+                    type: string
+                    example: "a084b423f2da4ffab32147d9b47163ca57885171"
+                    description: Current commit hash of enums pulled from git
+                CardsLastUpdate:
+                    type: string
+                    example: "2024-02-16T10:37:42.452213+01:00"
+                    description: Last update date of cards
+                EnumsLastUpdate:
+                    type: string
+                    example: "2024-02-16T10:37:42.452213+01:00"
+                    description: Last update date of enums
+            required:
+                - CardsLastCommit
+                - EnumsLastCommit
+                - CardsLastUpdate
+                - EnumsLastUpdate
+        Card:
+            properties:
+                ID:
+                    type: integer
+                    example: 32864
+                    description: Card ID
+                Name:
+                    type: string
+                    example: "The 13th Grave"
+                Desc:
+                    type: string
+                    example: "A zombie that suddenly appeared from plot #13 - an empty grave."
+                    description: Description of the card (flavor or effect)
+                Attribute:
+                    type: string
+                    example: "DARK"
+                Types:
+                    type: array
+                    items:
+                        type: string
+                        example: ["Monster", "Effect"]
+                Race:
+                    type: string
+                    example: "Zombie"
+                Archetypes:
+                    type: array
+                    items:
+                        type: string
+                Atk:
+                    type: integer
+                    example: 1200
+                Def:
+                    type: integer
+                    example: 900
+                Level:
+                    type: string
+                    example: "3★"
+                Categories:
+                    type: array
+                    items:
+                        type: string
+                        example: []
+            required:
+                - ID
+                - Name
+                - Desc
+                - Attribute
+                - Types
+                - Race
+                - Archetypes
+                - Atk
+                - Def
+                - Level
+                - Categories
+        CardMini:
+            properties:
+                ID:
+                    type: integer
+                    example: 32864
+                    description: Card ID
+                Label:
+                    type: string
+                    example: "The 13th Grave"
+                Url:
+                    type: string
+                    example: "/cards/32864"
+                    description: Endpoint of the card
+            required:
+                - ID
+                - Label
+                - Url
