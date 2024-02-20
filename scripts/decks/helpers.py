@@ -7,6 +7,7 @@ import sqlite3
 class DeckType(Enum):
     META = 'meta'
     NON_META = 'non_meta'
+    STRUCTURE = 'structure'
     FUN = 'fun'
     ANIME = 'anime'
     MASTER_DUEL = 'master_duel'
@@ -17,6 +18,8 @@ class DeckType(Enum):
             return 'meta'
         elif self == DeckType.NON_META:
             return 'non_meta'
+        elif self == DeckType.STRUCTURE:
+            return 'structure'
         elif self == DeckType.FUN:
             return 'fun'
         elif self == DeckType.ANIME:
@@ -32,6 +35,8 @@ class DeckType(Enum):
             return DeckType.META
         elif deck_type in ['Non-Meta Decks', 'Theorycrafting Decks']:
             return DeckType.NON_META
+        elif deck_type == 'Structure Decks':
+            return DeckType.STRUCTURE
         elif deck_type in ['Fun/Casual Decks']:
             return DeckType.FUN
         elif deck_type in ['Anime Decks']:
@@ -61,6 +66,7 @@ class Deck:
 
     def upsert_in_db(self, db_path):
         con = sqlite3.connect(db_path)
+        # INSERT DECK IN DB
         new_deck = con.execute(
             """
             INSERT INTO entity_decks (id, source, deck_type, updated_at)
@@ -76,7 +82,35 @@ class Deck:
                 "deck_type": self.deck_type.to_string(), "updated_at": self.updated_at}
         ).fetchall()
         con.commit()
-        new_deck_id = new_deck[0][0] if len(new_deck) > 0 else None
+        # INSERT CARDS IN DB LINKED TO THE DECK
+        deck_id = new_deck[0][0] if len(new_deck) > 0 else None
+        con.execute("DELETE FROM graph_cards_belong_to_decks WHERE deck_id = :deck_id", {
+                    "deck_id": deck_id})
+        con.commit()
+        for card_id in self.main_deck:
+            new_deck = con.execute(
+                """
+                INSERT INTO graph_cards_belong_to_decks(card_id, deck_id, category)
+                    VALUES (:card_id, :deck_id, :category)
+                """, {"card_id": card_id, "deck_id": deck_id, "category": 0}
+            )
+            con.commit()
+        for card_id in self.extra_deck:
+            new_deck = con.execute(
+                """
+                INSERT INTO graph_cards_belong_to_decks(card_id, deck_id, category)
+                    VALUES (:card_id, :deck_id, :category)
+                """, {"card_id": card_id, "deck_id": deck_id, "category": 1}
+            )
+            con.commit()
+        for card_id in self.side_deck:
+            new_deck = con.execute(
+                """
+                INSERT INTO graph_cards_belong_to_decks(card_id, deck_id, category)
+                    VALUES (:card_id, :deck_id, :category)
+                """, {"card_id": card_id, "deck_id": deck_id, "category": 2}
+            )
+            con.commit()
         con.close()
 
     @staticmethod

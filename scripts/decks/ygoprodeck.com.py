@@ -1,19 +1,30 @@
 #!/usr/bin/env python3
 
+import asyncio
 import datetime
 import re
 from helpers import Deck, get_kv_lastupdate, update_kv_lastupdate
 import os
 import sys
 import requests
+import aiohttp
+import asyncio
 
 DECKS_ENDPOINT = 'https://ygoprodeck.com/api/decks/getDecks.php'
 
 
-def get_date_published(url) -> datetime.datetime:
-    response = requests.get(url)
-    match = re.findall('"datePublished": "(.*)",', response.text)
-    return datetime.datetime.strptime(match[0], "%Y-%m-%d %H:%M:%S")
+async def fetch(session, url):
+    async with session.get(url) as response:
+        return await response.text()
+
+
+async def get_date_published(raw_deck):
+    async with aiohttp.ClientSession() as session:
+        response = await fetch(session, 'https://ygoprodeck.com/deck/' + raw_deck.get('pretty_url'))
+        print('response of ' + raw_deck.get('pretty_url'))
+        match = re.findall('"datePublished": "(.*)",', response)
+        raw_deck['date_published'] = datetime.datetime.strptime(
+            match[0], "%Y-%m-%d %H:%M:%S")
 
 
 def fetch_deck(offset, last_update: datetime.datetime):
@@ -21,9 +32,13 @@ def fetch_deck(offset, last_update: datetime.datetime):
     response = requests.get(DECKS_ENDPOINT, params={
                             'offset': offset, 'sort': 'Date', 'from': last_update.strftime("%Y-%m-%d")})
     raw_decks = response.json()
+
+    tasks = []
     for raw_deck in raw_decks:
-        raw_deck['date_published'] = get_date_published(
-            'https://ygoprodeck.com/deck/' + raw_deck.get('pretty_url'))
+        tasks.append(get_date_published(raw_deck))
+    asyncio.run(asyncio.wait(tasks))
+
+    for raw_deck in raw_decks:
         decks.append(Deck.from_ygoprodeck(raw_deck))
     return decks
 
