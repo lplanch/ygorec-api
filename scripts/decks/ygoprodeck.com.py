@@ -1,74 +1,50 @@
 #!/usr/bin/env python3
 
+import datetime
+import re
+from helpers import Deck, get_kv_lastupdate, update_kv_lastupdate
+import os
 import sys
-import json
 import requests
-from enum import Enum
-
-
-class DeckType(Enum):
-    META = 'meta'
-    NON_META = 'non_meta'
-    FUN = 'fun'
-    MASTER_DUEL = 'master_duel'
-    UNKNOWN = 'unknown'
-
-    @staticmethod
-    def from_ygoprodeck(deck_type: str):
-        if deck_type == 'Meta Decks':
-            return DeckType.META
-        elif deck_type == 'Non-Meta Decks':
-            return DeckType.NON_META
-        elif deck_type == 'Fun/Casual Decks':
-            return DeckType.FUN
-        elif deck_type == 'Master Duel Decks':
-            return DeckType.MASTER_DUEL
-        else:
-            print('not found: ', deck_type)
-            return DeckType.UNKNOWN
-
 
 DECKS_ENDPOINT = 'https://ygoprodeck.com/api/decks/getDecks.php'
 
 
-class Deck:
-    def __init__(self, id: str, source: str, deck_type: DeckType, main_deck: list, extra_deck: list, side_deck: list):
-        self.id = source + '/' + id
-        self.source = source
-        self.deck_type = deck_type
-        self.main_deck = main_deck
-        self.extra_deck = extra_deck
-        self.side_deck = side_deck
-
-    def dump(self):
-        print("{\n\t\"id\": \"%s\",\n\t\"source\": \"%s\",\n\t\"deck_type\": %s,\n\t\"main_deck\": %a,\n\t\"extra_deck\": %a,\n\t\"side_deck\": %a\n}" % (
-            self.id, self.source, self.deck_type, self.main_deck, self.extra_deck, self.side_deck))
-
-    @staticmethod
-    def from_ygoprodeck(deck_data: dict):
-        return Deck(
-            id=str(deck_data['deckNum']),
-            source='ygoprodeck.com',
-            deck_type=DeckType.from_ygoprodeck(
-                deck_data.get('format', 'unknown')),
-            main_deck=[int(n) for n in json.loads(
-                deck_data.get('main_deck', "[]"))],
-            extra_deck=[int(n) for n in json.loads(
-                deck_data.get('extra_deck', "[]"))],
-            side_deck=[int(n) for n in json.loads(
-                deck_data.get('side_deck', "[]"))]
-        )
+def get_date_published(url) -> datetime.datetime:
+    response = requests.get(url)
+    match = re.findall('"datePublished": "(.*)",', response.text)
+    return datetime.datetime.strptime(match[0], "%Y-%m-%d %H:%M:%S")
 
 
-def fetch_deck(offset):
-    response = requests.get(DECKS_ENDPOINT, params={'offset': offset})
-    data = response.json()
-    deck1 = Deck.from_ygoprodeck(data[0])
-    deck1.dump()
+def fetch_deck(offset, last_update: datetime.datetime):
+    decks = []
+    response = requests.get(DECKS_ENDPOINT, params={
+                            'offset': offset, 'sort': 'Date', 'from': last_update.strftime("%Y-%m-%d")})
+    raw_decks = response.json()
+    for raw_deck in raw_decks:
+        raw_deck['date_published'] = get_date_published(
+            'https://ygoprodeck.com/deck/' + raw_deck.get('pretty_url'))
+        decks.append(Deck.from_ygoprodeck(raw_deck))
+    return decks
 
 
 def main() -> int:
-    fetch_deck(0)
+    path = sys.argv[1] if len(sys.argv) > 1 else os.environ.get(
+        'DATABASE_PATH', './data/ygorec-data.db')
+    last_update = get_kv_lastupdate(path, 'ygoprodeck.com')
+    offset = 0
+    while True:
+        decks = fetch_deck(offset, last_update)
+        for deck in decks:
+            deck.upsert_in_db(path)
+        print('OFFSET: [' + str(offset) +
+              '], DECKS SIZE: [' + str(len(decks)) + ']')
+        decks[-1].dump()
+        update_kv_lastupdate(path, 'ygoprodeck.com',
+                             decks[-1].updated_at - datetime.timedelta(days=1))
+        if len(decks) < 20:
+            break
+        offset += len(decks)
     return 0
 
 

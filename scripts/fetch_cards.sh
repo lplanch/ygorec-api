@@ -7,7 +7,7 @@ if [ -d "$BABELCDB_PATH" ]; then
     echo "BabelCDB found, fetching new data..."
     git -C "$BABELCDB_PATH" checkout master
     git -C "$BABELCDB_PATH" fetch
-    if [[ $(git -C "$BABELCDB_PATH" diff HEAD...origin/master) ]] || !([ -d "$BABELCDB_PATH" ]); then
+    if [[ $(git -C "$BABELCDB_PATH" diff HEAD...origin/master) ]] || !([ -d "$DATABASE_PATH" ]); then
         # if there is changes or if DATABASE_URI file is not found, pull them and import the db
         git -C "$BABELCDB_PATH" pull
         echo "Importing new card data..."
