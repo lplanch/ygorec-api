@@ -121,11 +121,11 @@ class Deck:
             deck_type=DeckType.from_ygoprodeck(
                 deck_data.get('format', 'unknown')),
             main_deck=[int(n) for n in json.loads(
-                deck_data.get('main_deck', "[]"))],
+                deck_data.get('main_deck', "[]")) if n.isdigit()],
             extra_deck=[int(n) for n in json.loads(
-                deck_data.get('extra_deck', "[]"))],
+                deck_data.get('extra_deck', "[]")) if n.isdigit()],
             side_deck=[int(n) for n in json.loads(
-                deck_data.get('side_deck', "[]"))],
+                deck_data.get('side_deck', "[]")) if n.isdigit()],
             updated_at=deck_data.get(
                 'date_published')
         )
