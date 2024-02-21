@@ -1,12 +1,13 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
 	model "github.com/lplanch/test-go-api/models"
 	util "github.com/lplanch/test-go-api/utils"
 	"github.com/sirupsen/logrus"
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -16,13 +17,15 @@ func Connection() *gorm.DB {
 	config := gorm.Config{}
 
 	if os.Getenv("RAILWAY_ENVIRONMENT_NAME") != "production" {
-		databaseURI <- util.GodotEnv("DATABASE_PATH")
+		databaseURI <- fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+			util.GodotEnv("DB_USER"), util.GodotEnv("DB_PASSWORD"), util.GodotEnv("DB_HOST"), util.GodotEnv("DB_PORT"), util.GodotEnv("DB_NAME"))
 		config.Logger = logger.Default.LogMode(logger.Info)
 	} else {
-		databaseURI <- os.Getenv("DATABASE_PATH")
+		databaseURI <- fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+			os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME"))
 	}
 
-	db, err := gorm.Open(sqlite.Open(<-databaseURI), &config)
+	db, err := gorm.Open(mysql.Open(<-databaseURI), &config)
 
 	if err != nil {
 		defer logrus.Info("Connection to Database Failed")

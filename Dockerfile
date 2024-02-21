@@ -28,12 +28,23 @@ RUN apt-get update \
   vim \
   build-essential \
   git \
-  python3 python3-requests \
+  python3 python3-pip \
+  python3-requests \
   sqlite3 libsqlite3-dev
+RUN pip install --break-system-packages \
+  sqlite3-to-mysql \
+  mysql-connector
+
 COPY --from=builder . ./usr/src/app
+
 ARG PORT=4000
 ARG BABELCDB_PATH=./data/BabelCDB
-ARG DATABASE_PATH=./data/ygorec-data.db
+ARG DB_HOST=127.0.0.1
+ARG DB_PORT=3306
+ARG DB_USER=root
+ARG DB_PASSWORD=123456
+ARG DB_NAME=railway
+
 RUN make goprod
 EXPOSE $PORT
 CMD ["sh", "-c", "make upsert-data && ./main"]

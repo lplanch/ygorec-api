@@ -1,6 +1,6 @@
 package model
 
 type KeyValueStore struct {
-	Key   string `gorm:"type:TEXT PRIMARY KEY"`
-	Value string `gorm:"type:TEXT;NOT NULL"`
+	Key   string `gorm:"type:VARCHAR(255) PRIMARY KEY"`
+	Value string `gorm:"type:VARCHAR(255);NOT NULL"`
 }

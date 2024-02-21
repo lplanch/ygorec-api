@@ -1,17 +1,17 @@
 package model
 
 type EntityCard struct {
-	ID        uint64 `gorm:"type:INTEGER PRIMARY KEY"`
-	Ot        uint64 `gorm:"type:INTEGER"`
-	Alias     uint64 `gorm:"type:INTEGER"`
-	SetCode   uint64 `gorm:"type:INTEGER"`
-	Type      uint64 `gorm:"type:INTEGER"`
-	Atk       int64  `gorm:"type:INTEGER"`
-	Def       int64  `gorm:"type:INTEGER"`
-	Level     uint64 `gorm:"type:INTEGER"`
-	Race      uint64 `gorm:"type:INTEGER"`
-	Attribute uint64 `gorm:"type:INTEGER"`
-	Category  uint64 `gorm:"type:INTEGER"`
+	ID        uint64 `gorm:"type:BIGINT UNSIGNED PRIMARY KEY"`
+	Ot        uint64 `gorm:"type:BIGINT UNSIGNED"`
+	Alias     uint64 `gorm:"type:BIGINT UNSIGNED"`
+	SetCode   uint64 `gorm:"type:BIGINT UNSIGNED"`
+	Type      uint64 `gorm:"type:BIGINT UNSIGNED"`
+	Atk       int64  `gorm:"type:BIGINT"`
+	Def       int64  `gorm:"type:BIGINT"`
+	Level     uint64 `gorm:"type:BIGINT UNSIGNED"`
+	Race      uint64 `gorm:"type:BIGINT UNSIGNED"`
+	Attribute uint64 `gorm:"type:BIGINT UNSIGNED"`
+	Category  uint64 `gorm:"type:BIGINT UNSIGNED"`
 	Name      string `gorm:"type:TEXT"`
 	Desc      string `gorm:"type:TEXT"`
 }
