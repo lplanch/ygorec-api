@@ -33,7 +33,8 @@ RUN apt-get update \
   sqlite3 libsqlite3-dev
 RUN pip install --break-system-packages \
   sqlite3-to-mysql \
-  mysql-connector
+  mysql-connector \
+  aiohttp
 
 COPY --from=builder . ./usr/src/app
 
