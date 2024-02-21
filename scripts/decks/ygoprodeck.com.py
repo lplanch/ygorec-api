@@ -35,7 +35,8 @@ def fetch_deck(offset, last_update: datetime.datetime, default_date: datetime.da
 
     tasks = []
     for raw_deck in raw_decks:
-        tasks.append(get_date_published(raw_deck, default_date))
+        tasks.append(asyncio.create_task(
+            get_date_published(raw_deck, default_date)))
     asyncio.run(asyncio.wait(tasks))
 
     for raw_deck in raw_decks:
