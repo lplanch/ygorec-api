@@ -18,9 +18,12 @@ require (
 	golang.org/x/crypto v0.19.0
 	gorm.io/gorm v1.25.7-0.20240204074919-46816ad31dde
 	syreclabs.com/go/faker v1.2.3
+	gorm.io/driver/mysql v1.5.4
 )
 
-require github.com/mattn/go-sqlite3 v1.14.17 // indirect
+require (
+	github.com/go-sql-driver/mysql v1.7.0 // indirect
+)
 
 require (
 	github.com/bytedance/sonic v1.10.2 // indirect
