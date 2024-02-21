@@ -5,7 +5,6 @@ import datetime
 import os
 import subprocess
 import sys
-import sqlite3
 import requests
 import mysql.connector
 
