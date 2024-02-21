@@ -4,6 +4,13 @@ from enum import Enum
 import sqlite3
 
 
+def safe_load_json(json_string):
+    try:
+        return json.loads(json_string)
+    except ValueError:
+        return []
+
+
 class DeckType(Enum):
     META = 'meta'
     NON_META = 'non_meta'
@@ -120,11 +127,11 @@ class Deck:
             source='ygoprodeck.com',
             deck_type=DeckType.from_ygoprodeck(
                 deck_data.get('format', 'unknown')),
-            main_deck=[int(n) for n in json.loads(
+            main_deck=[int(n) for n in safe_load_json(
                 deck_data.get('main_deck', "[]")) if n.isdigit()],
-            extra_deck=[int(n) for n in json.loads(
+            extra_deck=[int(n) for n in safe_load_json(
                 deck_data.get('extra_deck', "[]")) if n.isdigit()],
-            side_deck=[int(n) for n in json.loads(
+            side_deck=[int(n) for n in safe_load_json(
                 deck_data.get('side_deck', "[]")) if n.isdigit()],
             updated_at=deck_data.get(
                 'date_published')

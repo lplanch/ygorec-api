@@ -18,16 +18,16 @@ async def fetch(session, url):
         return await response.text()
 
 
-async def get_date_published(raw_deck):
+async def get_date_published(raw_deck, default_date):
     async with aiohttp.ClientSession() as session:
         response = await fetch(session, 'https://ygoprodeck.com/deck/' + raw_deck.get('pretty_url'))
-        print('response of ' + raw_deck.get('pretty_url'))
         match = re.findall('"datePublished": "(.*)",', response)
+        print('response of ' + raw_deck.get('pretty_url'))
         raw_deck['date_published'] = datetime.datetime.strptime(
-            match[0], "%Y-%m-%d %H:%M:%S")
+            match[0], "%Y-%m-%d %H:%M:%S") if len(match) > 0 else default_date
 
 
-def fetch_deck(offset, last_update: datetime.datetime):
+def fetch_deck(offset, last_update: datetime.datetime, default_date: datetime.datetime):
     decks = []
     response = requests.get(DECKS_ENDPOINT, params={
                             'offset': offset, 'sort': 'Date', 'from': last_update.strftime("%Y-%m-%d")})
@@ -35,7 +35,7 @@ def fetch_deck(offset, last_update: datetime.datetime):
 
     tasks = []
     for raw_deck in raw_decks:
-        tasks.append(get_date_published(raw_deck))
+        tasks.append(get_date_published(raw_deck, default_date))
     asyncio.run(asyncio.wait(tasks))
 
     for raw_deck in raw_decks:
@@ -47,14 +47,16 @@ def main() -> int:
     path = sys.argv[1] if len(sys.argv) > 1 else os.environ.get(
         'DATABASE_PATH', './data/ygorec-data.db')
     last_update = get_kv_lastupdate(path, 'ygoprodeck.com')
+    default_date = None
     offset = 0
     while True:
-        decks = fetch_deck(offset, last_update)
+        decks = fetch_deck(offset, last_update, default_date)
         for deck in decks:
             deck.upsert_in_db(path)
         print('OFFSET: [' + str(offset) +
               '], DECKS SIZE: [' + str(len(decks)) + ']')
         decks[-1].dump()
+        default_date = decks[-1].updated_at
         update_kv_lastupdate(path, 'ygoprodeck.com',
                              decks[-1].updated_at - datetime.timedelta(days=1))
         if len(decks) < 20:
