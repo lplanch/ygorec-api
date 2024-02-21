@@ -2,5 +2,6 @@ bin
 .env
 main
 ygorec-data.db
+ygorec-data.db-journal
 **/BabelCDB
 **/.DS_Store
