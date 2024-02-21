@@ -1,7 +1,14 @@
 import datetime
 import json
 from enum import Enum
-import sqlite3
+import os
+import mysql.connector
+
+db_user = os.environ.get('DB_USER', 'root')
+db_password = os.environ.get('DB_PASSWORD', '123456')
+db_host = os.environ.get('DB_HOST', '127.0.0.1')
+db_port = os.environ.get('DB_PORT', '3306')
+db_name = os.environ.get('DB_NAME', 'railway')
 
 
 def safe_load_json(json_string):
@@ -71,53 +78,61 @@ class Deck:
         print("{\n\t\"id\": \"%s\",\n\t\"source\": \"%s\",\n\t\"deck_type\": %s,\n\t\"main_deck\": %a,\n\t\"extra_deck\": %a,\n\t\"side_deck\": %a,\n\t\"updated_at\": %s\n}" % (
             self.id, self.source, self.deck_type, self.main_deck, self.extra_deck, self.side_deck, self.updated_at.strftime("%Y-%m-%d")))
 
-    def upsert_in_db(self, db_path):
-        con = sqlite3.connect(db_path)
+    def upsert_in_db(self):
+        con = mysql.connector.connect(host=db_host,
+                                      port=db_port,
+                                      user=db_user,
+                                      password=db_password,
+                                      database=db_name)
+        cursor = con.cursor()
         # INSERT DECK IN DB
-        new_deck = con.execute(
+        cursor.execute(
             """
             INSERT INTO entity_decks (id, source, deck_type, updated_at)
-                VALUES(:id, :source, :deck_type, :updated_at)
-            ON CONFLICT(id) DO UPDATE
-                SET
-                    source=excluded.source,
-                    deck_type=excluded.deck_type,
-                    updated_at=excluded.updated_at
-                RETURNING id;
+                VALUES(%s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                    source=source,
+                    deck_type=deck_type,
+                    updated_at=updated_at;
             """,
-            {"id": self.id, "source": self.source,
-                "deck_type": self.deck_type.to_string(), "updated_at": self.updated_at}
-        ).fetchall()
+            (self.id, self.source, self.deck_type.to_string(), self.updated_at)
+        )
         con.commit()
         # INSERT CARDS IN DB LINKED TO THE DECK
-        deck_id = new_deck[0][0] if len(new_deck) > 0 else None
-        con.execute("DELETE FROM graph_cards_belong_to_decks WHERE deck_id = :deck_id", {
-                    "deck_id": deck_id})
+        cursor.execute(
+            "DELETE FROM graph_cards_belong_to_decks WHERE deck_id = %s", (self.id,))
         con.commit()
         for card_id in self.main_deck:
-            new_deck = con.execute(
-                """
-                INSERT INTO graph_cards_belong_to_decks(card_id, deck_id, category)
-                    VALUES (:card_id, :deck_id, :category)
-                """, {"card_id": card_id, "deck_id": deck_id, "category": 0}
-            )
-            con.commit()
+            try:
+                cursor.execute(
+                    """
+                    INSERT INTO graph_cards_belong_to_decks(card_id, deck_id, category)
+                        VALUES (%s, %s, %s);
+                    """, (card_id, self.id, 0)
+                )
+            except mysql.connector.errors.IntegrityError:
+                continue
         for card_id in self.extra_deck:
-            new_deck = con.execute(
-                """
-                INSERT INTO graph_cards_belong_to_decks(card_id, deck_id, category)
-                    VALUES (:card_id, :deck_id, :category)
-                """, {"card_id": card_id, "deck_id": deck_id, "category": 1}
-            )
-            con.commit()
+            try:
+                cursor.execute(
+                    """
+                    INSERT INTO graph_cards_belong_to_decks(card_id, deck_id, category)
+                        VALUES (%s, %s, %s);
+                    """, (card_id, self.id, 0)
+                )
+            except mysql.connector.errors.IntegrityError:
+                continue
         for card_id in self.side_deck:
-            new_deck = con.execute(
-                """
-                INSERT INTO graph_cards_belong_to_decks(card_id, deck_id, category)
-                    VALUES (:card_id, :deck_id, :category)
-                """, {"card_id": card_id, "deck_id": deck_id, "category": 2}
-            )
-            con.commit()
+            try:
+                cursor.execute(
+                    """
+                    INSERT INTO graph_cards_belong_to_decks(card_id, deck_id, category)
+                        VALUES (%s, %s, %s);
+                    """, (card_id, self.id, 0)
+                )
+            except mysql.connector.errors.IntegrityError:
+                continue
+        con.commit()
         con.close()
 
     @staticmethod
@@ -138,22 +153,33 @@ class Deck:
         )
 
 
-def get_kv_lastupdate(db_path, key):
-    con = sqlite3.connect(db_path)
-    result = con.execute(
-        "SELECT value FROM key_value_stores WHERE key = 'last_update_' || :key",
-        {"key": key}
-    ).fetchall()
+def get_kv_lastupdate(key):
+    con = mysql.connector.connect(host=db_host,
+                                  port=db_port,
+                                  user=db_user,
+                                  password=db_password,
+                                  database=db_name)
+    cursor = con.cursor()
+    cursor.execute(
+        "SELECT value FROM key_value_stores WHERE `key` = CONCAT('last_update_', %s) LIMIT 1;",
+        (key,)
+    )
+    result = cursor.fetchall()
     con.commit()
     con.close()
     return datetime.datetime.fromisoformat(result[0][0]) if len(result) > 0 else datetime.datetime.fromisoformat('2016-06-02')
 
 
-def update_kv_lastupdate(db_path: str, key: str, date: datetime.datetime):
-    con = sqlite3.connect(db_path)
-    con.execute(
-        "INSERT INTO key_value_stores (key, value) VALUES('last_update_' || :key, :value) ON CONFLICT(key) DO UPDATE SET value=excluded.value;",
-        {"key": key, "value": date.isoformat()}
+def update_kv_lastupdate(key: str, date: datetime.datetime):
+    con = mysql.connector.connect(host=db_host,
+                                  port=db_port,
+                                  user=db_user,
+                                  password=db_password,
+                                  database=db_name)
+    cursor = con.cursor()
+    cursor.execute(
+        "INSERT INTO key_value_stores (`key`, value) VALUES(CONCAT('last_update_', %s), %s) ON DUPLICATE KEY UPDATE value=value;",
+        (key, date.isoformat())
     )
     con.commit()
     con.close()

@@ -44,20 +44,18 @@ def fetch_deck(offset, last_update: datetime.datetime, default_date: datetime.da
 
 
 def main() -> int:
-    path = sys.argv[1] if len(sys.argv) > 1 else os.environ.get(
-        'DATABASE_PATH', './data/ygorec-data.db')
-    last_update = get_kv_lastupdate(path, 'ygoprodeck.com')
+    last_update = get_kv_lastupdate('ygoprodeck.com')
     default_date = None
     offset = 0
     while True:
         decks = fetch_deck(offset, last_update, default_date)
         for deck in decks:
-            deck.upsert_in_db(path)
+            deck.upsert_in_db()
         print('OFFSET: [' + str(offset) +
               '], DECKS SIZE: [' + str(len(decks)) + ']')
         decks[-1].dump()
         default_date = decks[-1].updated_at
-        update_kv_lastupdate(path, 'ygoprodeck.com',
+        update_kv_lastupdate('ygoprodeck.com',
                              decks[-1].updated_at - datetime.timedelta(days=1))
         if len(decks) < 20:
             break

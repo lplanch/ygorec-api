@@ -7,7 +7,7 @@ import (
 )
 
 type EntityDeck struct {
-	ID        string `gorm:"type:TEXT PRIMARY KEY"`
+	ID        string `gorm:"type:VARCHAR(255) PRIMARY KEY"`
 	Source    string `gorm:"type:TEXT"`
 	DeckType  string `gorm:"type:TEXT"`
 	UpdatedAt time.Time
