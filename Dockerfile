@@ -39,7 +39,6 @@ COPY --from=builder . ./usr/src/app
 
 ARG PORT=4000
 ARG BABELCDB_PATH=./data/BabelCDB
-ARG DATABASE_PATH=./data/ygorec-data.db
 ARG DB_HOST=127.0.0.1
 ARG DB_PORT=3306
 ARG DB_USER=root
