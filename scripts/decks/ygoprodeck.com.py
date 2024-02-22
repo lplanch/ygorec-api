@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 
-import asyncio
 import datetime
 import re
-from helpers import Deck, get_kv_lastupdate, update_kv_lastupdate
-import os
-import sys
 import requests
 import aiohttp
 import asyncio
+
+from helpers import Deck, get_kv_lastupdate, update_kv_lastupdate
 
 DECKS_ENDPOINT = 'https://ygoprodeck.com/api/decks/getDecks.php'
 
@@ -27,7 +25,7 @@ async def get_date_published(raw_deck, default_date):
             match[0], "%Y-%m-%d %H:%M:%S") if len(match) > 0 else default_date
 
 
-def fetch_deck(offset, last_update: datetime.datetime, default_date: datetime.datetime):
+async def fetch_deck(offset, last_update: datetime.datetime, default_date: datetime.datetime):
     decks = []
     response = requests.get(DECKS_ENDPOINT, params={
                             'offset': offset, 'sort': 'Date', 'from': last_update.strftime("%Y-%m-%d")})
@@ -35,21 +33,21 @@ def fetch_deck(offset, last_update: datetime.datetime, default_date: datetime.da
 
     tasks = []
     for raw_deck in raw_decks:
-        tasks.append(asyncio.create_task(
-            get_date_published(raw_deck, default_date)))
-    asyncio.run(asyncio.wait(tasks))
+        task = asyncio.create_task(get_date_published(raw_deck, default_date))
+        tasks.append(task)
+    await asyncio.wait(tasks)
 
     for raw_deck in raw_decks:
         decks.append(Deck.from_ygoprodeck(raw_deck))
     return decks
 
 
-def main() -> int:
+async def main() -> int:
     last_update = get_kv_lastupdate('ygoprodeck.com')
     default_date = None
     offset = 0
     while True:
-        decks = fetch_deck(offset, last_update, default_date)
+        decks = await fetch_deck(offset, last_update, default_date)
         for deck in decks:
             deck.upsert_in_db()
         print('OFFSET: [' + str(offset) +
@@ -65,4 +63,4 @@ def main() -> int:
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    asyncio.run(main())
