@@ -53,10 +53,10 @@ func (r *repository) SanitizeCardRepository(input *model.EntityCard) (*model.Mod
 		(SELECT GROUP_CONCAT(enum_types.value) FROM enum_types WHERE entity_cards.type & enum_types.id) AS types,
 		(SELECT enum_races.value FROM enum_races WHERE entity_cards.race = enum_races.id LIMIT 1) AS race,
 		(SELECT GROUP_CONCAT(enum_archetypes.value) FROM enum_archetypes WHERE
-			(entity_cards.set_code & 65535) = enum_archetypes.id OR
-			((entity_cards.set_code >> 16) & 65535) = enum_archetypes.id OR
-			((entity_cards.set_code >> 32) & 65535) = enum_archetypes.id OR
-			(entity_cards.set_code >> 48) = enum_archetypes.id
+			(entity_cards.set_code & 65535) = enum_archetypes.id OR (((entity_cards.set_code & 65535) & 4095) = (enum_archetypes.id & 4095) AND ((entity_cards.set_code & 65535) & enum_archetypes.id) = (enum_archetypes.id & 65535)) OR
+			((entity_cards.set_code >> 16) & 65535) = enum_archetypes.id OR ((((entity_cards.set_code >> 16) & 65535) & 4095) = (enum_archetypes.id & 4095) AND (((entity_cards.set_code >> 16) & 65535) & enum_archetypes.id) = (enum_archetypes.id & 65535)) OR
+			((entity_cards.set_code >> 32) & 65535) = enum_archetypes.id OR ((((entity_cards.set_code >> 32) & 65535) & 4095) = (enum_archetypes.id & 4095) AND (((entity_cards.set_code >> 32) & 65535) & enum_archetypes.id) = (enum_archetypes.id & 65535)) OR
+			(entity_cards.set_code >> 48) = enum_archetypes.id OR (((entity_cards.set_code >> 48) & 4095) = (enum_archetypes.id & 4095) AND ((entity_cards.set_code >> 48) & enum_archetypes.id) = (enum_archetypes.id & 65535))
 		) AS archetypes,
 		entity_cards.atk,
 		entity_cards.def,
