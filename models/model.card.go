@@ -40,5 +40,5 @@ type ModelListCardStats struct {
 	Url           string
 	Percentage    uint8
 	Synergy       int8
-	AverageAmount uint8
+	AverageAmount float32
 }
