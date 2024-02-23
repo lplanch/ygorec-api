@@ -5,6 +5,6 @@ import "time"
 type InputListCards struct {
 	From   time.Time `validate:"datetime"`
 	To     time.Time `validate:"datetime"`
-	Limit  uint16    `validate:"gt=0"`
-	Offset uint16    `validate:"gte=0"`
+	Limit  int       `validate:"gt=0"`
+	Offset int       `validate:"gte=0"`
 }

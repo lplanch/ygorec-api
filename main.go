@@ -63,6 +63,7 @@ func SetupRouter() *gin.Engine {
 	@description Init All Route
 	*/
 	route.InitMiscRoutes(db, router)
+	route.InitBanlistRoutes(db, router)
 	route.InitCardsRoutes(db, router)
 
 	return router

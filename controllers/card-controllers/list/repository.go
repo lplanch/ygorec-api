@@ -6,25 +6,27 @@ import (
 )
 
 type Repository interface {
-	ListCardsRepository(input *InputListCards) (*[]model.EntityCard, string)
+	ListCardsRepository(input *InputListCards) (*[]model.ModelListCardStats, string)
 }
 
 type repository struct {
 	db *gorm.DB
 }
 
-func NewRepositoryGet(db *gorm.DB) *repository {
+func NewRepositoryList(db *gorm.DB) *repository {
 	return &repository{db: db}
 }
 
-func (r *repository) ListCardsRepository(input *InputListCards) (*[]model.EntityCard, string) {
+func (r *repository) ListCardsRepository(input *InputListCards) (*[]model.ModelListCardStats, string) {
 
-	var cards []model.EntityCard
+	var cards []model.ModelListCardStats
 
 	db := r.db.Model(&model.EntityCard{})
 	errorCode := make(chan string, 1)
 
-	listCards := db.Debug().Limit(20).Find(&cards)
+	listCards := db.Debug().Select(`
+	
+	`).Limit(input.Limit).Offset(input.Offset).Find(&cards)
 
 	if listCards.RowsAffected < 1 {
 		errorCode <- "GET_CARD_NOT_FOUND_404"

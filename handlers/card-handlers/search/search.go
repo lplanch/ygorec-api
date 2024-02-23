@@ -1,4 +1,4 @@
-package handlerGetCard
+package handlerSearchCard
 
 import (
 	"net/http"
