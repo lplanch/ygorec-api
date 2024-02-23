@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type MvTopCard struct {
 	CardID     uint64  `gorm:"index:idx_card_banlist,unique,foreignKey:Card"`
 	BanlistID  string  `gorm:"index:idx_card_banlist,unique,foreignKey:Banlist;DEFAULT NULL"`
-	Percentage uint8   `gorm:"index:,INTEGER;NOT NULL;DEFAULT NULL"`
+	Percentage float32 `gorm:"index:,DECIMAL(5,2);NOT NULL;DEFAULT NULL"`
 	Average    float32 `gorm:"DECIMAL(6,5);NOT NULL;DEFAULT NULL"`
 
 	// Constraint

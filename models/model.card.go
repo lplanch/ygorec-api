@@ -35,10 +35,9 @@ type ModelListCard struct {
 }
 
 type ModelListCardStats struct {
-	ID            uint64
-	Label         string
-	Url           string
-	Percentage    uint8
-	Synergy       int8
-	AverageAmount float32
+	ID         uint64
+	Label      string
+	Url        string
+	Percentage float32
+	Average    float32
 }

@@ -6,7 +6,7 @@ import (
 )
 
 type Repository interface {
-	ListCardsRepository(input *InputListCards) (*[]model.ModelListCardStats, string)
+	ListCardsRepository(input *InputListCards) *[]model.ModelListCardStats
 }
 
 type repository struct {
@@ -17,23 +17,24 @@ func NewRepositoryList(db *gorm.DB) *repository {
 	return &repository{db: db}
 }
 
-func (r *repository) ListCardsRepository(input *InputListCards) (*[]model.ModelListCardStats, string) {
+func (r *repository) ListCardsRepository(input *InputListCards) *[]model.ModelListCardStats {
 
 	var cards []model.ModelListCardStats
 
-	db := r.db.Model(&model.EntityCard{})
-	errorCode := make(chan string, 1)
+	db := r.db.Model(&model.MvTopCard{})
 
-	listCards := db.Debug().Select(`
-	
+	db.Debug().Select(`
+		mv_top_cards.card_id AS id,
+		e.name AS label,
+		CONCAT('/cards/', CONVERT(mv_top_cards.card_id, char)) AS url,
+		mv_top_cards.percentage,
+		mv_top_cards.average
+	`).Joins(`
+		JOIN entity_cards e ON e.id = mv_top_cards.card_id
+	`).Order(`
+		mv_top_cards.percentage DESC,
+		mv_top_cards.card_id ASC
 	`).Limit(input.Limit).Offset(input.Offset).Find(&cards)
 
-	if listCards.RowsAffected < 1 {
-		errorCode <- "GET_CARD_NOT_FOUND_404"
-		return &cards, <-errorCode
-	} else {
-		errorCode <- "nil"
-	}
-
-	return &cards, <-errorCode
+	return &cards
 }

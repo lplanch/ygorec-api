@@ -2,7 +2,7 @@ package handlerListCards
 
 import (
 	"net/http"
-	"time"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	listCards "github.com/lplanch/test-go-api/controllers/card-controllers/list"
@@ -20,22 +20,17 @@ func NewHandlerListCards(service listCards.Service) *handler {
 
 func (h *handler) ListCardsHandler(ctx *gin.Context) {
 
-	var input listCards.InputListCards
-	input.From, _ = time.Parse(time.RFC3339, ctx.Query("from"))
-	input.To, _ = time.Parse(time.RFC3339, ctx.Query("to"))
+	input := listCards.InputListCards{Limit: 20, Offset: 0}
+
+	if len(ctx.Query("limit")) > 0 {
+		input.Limit, _ = strconv.Atoi(ctx.Query("limit"))
+	}
+	if len(ctx.Query("offset")) > 0 {
+		input.Offset, _ = strconv.Atoi(ctx.Query("offset"))
+	}
 
 	config := gpc.ErrorConfig{
 		Options: []gpc.ErrorMetaConfig{
-			{
-				Tag:     "datetime",
-				Field:   "From",
-				Message: "from must be a date if specified",
-			},
-			{
-				Tag:     "datetime",
-				Field:   "To",
-				Message: "to must be a date if specified",
-			},
 			{
 				Tag:     "gt",
 				Field:   "Limit",
@@ -56,7 +51,7 @@ func (h *handler) ListCardsHandler(ctx *gin.Context) {
 		return
 	}
 
-	getCard, _ := h.service.ListCardsService(&input)
+	getCard := h.service.ListCardsService(&input)
 
 	util.APIResponse(ctx, "List cards data found", http.StatusOK, http.MethodGet, getCard)
 }

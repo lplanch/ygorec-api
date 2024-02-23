@@ -5,7 +5,7 @@ import (
 )
 
 type Service interface {
-	ListCardsService(input *InputListCards) (*[]model.ModelListCardStats, string)
+	ListCardsService(input *InputListCards) *[]model.ModelListCardStats
 }
 
 type service struct {
@@ -16,9 +16,9 @@ func NewServiceList(repository Repository) *service {
 	return &service{repository: repository}
 }
 
-func (s *service) ListCardsService(input *InputListCards) (*[]model.ModelListCardStats, string) {
+func (s *service) ListCardsService(input *InputListCards) *[]model.ModelListCardStats {
 
-	resultListCards, errGetVersion := s.repository.ListCardsRepository(input)
+	resultListCards := s.repository.ListCardsRepository(input)
 
-	return resultListCards, errGetVersion
+	return resultListCards
 }
