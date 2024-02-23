@@ -49,11 +49,13 @@ goformat:
 
 FETCH_CARDS := ./scripts/fetch_cards.sh
 FETCH_ENUMS := ./scripts/import_enums_data.py
+FETCH_DECKS := ./scripts/fetch_banlists.sh
 FETCH_DECKS := ./scripts/fetch_decks.sh
 
 upsert-data:
 	${FETCH_CARDS}
 	${FETCH_ENUMS}
+	${FETCH_BANLISTS}
 	${FETCH_DECKS}
 
 .PHONY: dcb dcuf dcubf dcu dcd goinstall godev goprod gotest goformat upsert-data

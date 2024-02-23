@@ -1,4 +1,4 @@
-package handlerGetCard
+package handlerSearchCard
 
 import (
 	"net/http"
@@ -26,12 +26,12 @@ func (h *handler) SearchCardHandler(ctx *gin.Context) {
 		Options: []gpc.ErrorMetaConfig{
 			{
 				Tag:     "required",
-				Field:   "q",
+				Field:   "Q",
 				Message: "q is required in query",
 			},
 			{
 				Tag:     "lowercase",
-				Field:   "q",
+				Field:   "Q",
 				Message: "q must be a lowercase string",
 			},
 		},

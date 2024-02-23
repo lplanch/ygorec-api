@@ -42,8 +42,12 @@ func Connection() *gorm.DB {
 		// ENTITIES
 		&model.EntityCard{},
 		&model.EntityDeck{},
+		&model.EntityBanlist{},
+		// MATERIALIZED VIEWS
+		&model.MvTopCard{},
 		// GRAPHS
 		&model.GraphCardsBelongToDecks{},
+		&model.GraphCardsBelongToBanlists{},
 		// ENUMS
 		&model.EnumRule{},
 		&model.EnumAttribute{},
@@ -53,6 +57,8 @@ func Connection() *gorm.DB {
 		&model.EnumType{},
 		&model.EnumArchetype{},
 	)
+
+	model.AutoMigrateProcedureMvTopCards(db)
 
 	if err != nil {
 		logrus.Fatal(err.Error())

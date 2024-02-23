@@ -33,3 +33,11 @@ type ModelListCard struct {
 	Label string
 	Url   string
 }
+
+type ModelListCardStats struct {
+	ID         uint64
+	Label      string
+	Url        string
+	Percentage float32
+	Average    float32
+}
