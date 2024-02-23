@@ -1,8 +1,6 @@
 package model
 
-import "time"
-
 type ModelBanlist struct {
-	Date time.Time
+	Date string
 	Ot   uint64
 }

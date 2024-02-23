@@ -24,7 +24,7 @@ func (r *repository) ListBanlistsRepository() *[]model.ModelBanlist {
 	db := r.db.Model(&model.EntityBanlist{})
 
 	db.Debug().Select(`
-		STR_TO_DATE(entity_banlists.id, '%Y-%m-%d') AS date,
+		entity_banlists.id AS date,
 		entity_banlists.ot
 	`).Find(&banlists)
 

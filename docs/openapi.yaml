@@ -131,7 +131,7 @@ paths:
                 "500":
                     description: Could not get API imported data
     ############################
-    ## GET CARD ENDPOINT
+    ## SEARCH CARDS ENDPOINT
     ############################
     /typeahead:
         get:
@@ -167,6 +167,42 @@ paths:
                                         type: array
                                         items:
                                             $ref: "#/components/schemas/CardMini"
+                                required:
+                                    - StatusCode
+                                    - Method
+                                    - Message
+                                    - Data
+                "500":
+                    description: Could not get API imported data
+    ############################
+    ## GET BANLISTS ENDPOINT
+    ############################
+    /banlists:
+        get:
+            tags:
+                - Banlists
+            summary: List all existing banlists
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    StatusCode:
+                                        type: integer
+                                        format: number
+                                        example: 200
+                                    Method:
+                                        type: string
+                                        example: GET
+                                    Message:
+                                        type: string
+                                    Data:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/Banlist"
                                 required:
                                     - StatusCode
                                     - Method
@@ -288,6 +324,14 @@ components:
                     type: string
                     example: "/cards/32864"
                     description: Endpoint of the card
+        Banlist:
+            properties:
+                Date:
+                    type: string
+                    format: dates
+                Ot:
+                    type: integer
+                    example: 2
             required:
                 - ID
                 - Label
