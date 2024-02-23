@@ -49,7 +49,7 @@ goformat:
 
 FETCH_CARDS := ./scripts/fetch_cards.sh
 FETCH_ENUMS := ./scripts/import_enums_data.py
-FETCH_DECKS := ./scripts/fetch_banlists.sh
+FETCH_BANLISTS := ./scripts/fetch_banlists.sh
 FETCH_DECKS := ./scripts/fetch_decks.sh
 
 upsert-data:
