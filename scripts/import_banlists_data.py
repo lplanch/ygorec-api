@@ -111,7 +111,7 @@ def update_kv_banlists_version_date():
                                   database=db_name)
     cursor = con.cursor()
     cursor.execute(
-        "INSERT INTO key_value_stores (`key`, value) VALUES(%s, %s) ON DUPLICATE KEY UPDATE value=value;",
+        "INSERT INTO key_value_stores (`key`, value) VALUES(%s, %s) ON DUPLICATE KEY UPDATE value=VALUES(value);",
         (KV_BANLISTS_VERSION_DATE, datetime.datetime.now(
             datetime.timezone.utc).isoformat(),)
     )

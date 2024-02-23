@@ -54,6 +54,7 @@ async def main() -> int:
               '], DECKS SIZE: [' + str(len(decks)) + ']')
         decks[-1].dump()
         default_date = decks[-1].updated_at
+        print(decks[-1].updated_at - datetime.timedelta(days=1))
         update_kv_lastupdate('ygoprodeck.com',
                              decks[-1].updated_at - datetime.timedelta(days=1))
         if len(decks) < 20:

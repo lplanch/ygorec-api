@@ -177,8 +177,9 @@ def update_kv_lastupdate(key: str, date: datetime.datetime):
                                   password=db_password,
                                   database=db_name)
     cursor = con.cursor()
+    print(date.isoformat())
     cursor.execute(
-        "INSERT INTO key_value_stores (`key`, value) VALUES(CONCAT('last_update_', %s), %s) ON DUPLICATE KEY UPDATE value=value;",
+        "INSERT INTO key_value_stores (`key`, value) VALUES(CONCAT('last_update_', %s), %s) ON DUPLICATE KEY UPDATE value=VALUES(value);",
         (key, date.isoformat())
     )
     con.commit()

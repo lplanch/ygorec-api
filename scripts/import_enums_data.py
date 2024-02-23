@@ -40,7 +40,7 @@ def update_enums(parsed_data):
     for key in parsed_data:
         for kv in parsed_data[key]:
             cursor.execute(
-                "INSERT INTO {} (id, value) VALUES(%s, %s) ON DUPLICATE KEY UPDATE value=value;".format(
+                "INSERT INTO {} (id, value) VALUES(%s, %s) ON DUPLICATE KEY UPDATE value=VALUES(value);".format(
                     key),
                 (kv["id"], kv["value"])
             )
@@ -84,11 +84,11 @@ def update_kv_dataeditorx_commit(commit_str):
                                   database=db_name)
     cursor = con.cursor()
     cursor.execute(
-        "INSERT INTO key_value_stores (`key`, value) VALUES(%s, %s) ON DUPLICATE KEY UPDATE value=value;",
+        "INSERT INTO key_value_stores (`key`, value) VALUES(%s, %s) ON DUPLICATE KEY UPDATE value=VALUES(value);",
         (KV_ENUMS_LAST_COMMIT, commit_str)
     )
     cursor.execute(
-        "INSERT INTO key_value_stores (`key`, value) VALUES('enums_version_date', %s) ON DUPLICATE KEY UPDATE value=value;",
+        "INSERT INTO key_value_stores (`key`, value) VALUES('enums_version_date', %s) ON DUPLICATE KEY UPDATE value=VALUES(value);",
         (datetime.datetime.now(datetime.timezone.utc).isoformat(),)
     )
     con.commit()

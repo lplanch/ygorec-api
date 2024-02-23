@@ -49,12 +49,12 @@ def update_kv_babelcdb_commit(commit_str):
         """
             INSERT INTO key_value_stores (`key`, value)
                 VALUES (%s, %s)
-            ON DUPLICATE KEY UPDATE value=value;
+            ON DUPLICATE KEY UPDATE value=VALUES(value);
         """,
         (KV_BABELCDB_LAST_COMMIT, commit_str)
     )
     cursor.execute(
-        "INSERT INTO key_value_stores (`key`, value) VALUES ('babelcdb_version_date', %s) ON DUPLICATE KEY UPDATE value=value;",
+        "INSERT INTO key_value_stores (`key`, value) VALUES ('babelcdb_version_date', %s) ON DUPLICATE KEY UPDATE value=VALUES(value);",
         (datetime.datetime.now(datetime.timezone.utc).isoformat(),)
     )
     con.commit()
