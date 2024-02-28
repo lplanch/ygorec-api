@@ -6,6 +6,7 @@ import (
 )
 
 type Repository interface {
+	GetDeckAmount(input *InputListCards) *uint32
 	ListCardsRepository(input *InputListCards) *[]model.ModelListCardStats
 }
 
@@ -15,6 +16,21 @@ type repository struct {
 
 func NewRepositoryList(db *gorm.DB) *repository {
 	return &repository{db: db}
+}
+
+func (r *repository) GetDeckAmount(input *InputListCards) *uint32 {
+
+	var total uint32
+
+	db := r.db.Model(&model.EntityDeck{})
+
+	db.Debug().Select(`
+		COUNT(*)
+	`).Where(`
+		"" = ? OR updated_at > ?
+	`, input.Banlist, input.Banlist).Find(&total)
+
+	return &total
 }
 
 func (r *repository) ListCardsRepository(input *InputListCards) *[]model.ModelListCardStats {
@@ -27,12 +43,14 @@ func (r *repository) ListCardsRepository(input *InputListCards) *[]model.ModelLi
 		mv_top_cards.card_id AS id,
 		e.name AS label,
 		CONCAT('/cards/', CONVERT(mv_top_cards.card_id, char)) AS url,
-		mv_top_cards.percentage,
+		mv_top_cards.amount,
 		mv_top_cards.average
 	`).Joins(`
 		JOIN entity_cards e ON e.id = mv_top_cards.card_id
-	`).Order(`
-		mv_top_cards.percentage DESC,
+	`).Where(`
+		IFNULL(mv_top_cards.banlist_id, "") = ?
+	`, input.Banlist).Order(`
+		mv_top_cards.amount DESC,
 		mv_top_cards.card_id ASC
 	`).Limit(input.Limit).Offset(input.Offset).Find(&cards)
 

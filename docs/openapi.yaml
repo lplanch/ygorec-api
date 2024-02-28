@@ -156,6 +156,14 @@ paths:
                       default: 0
                   required: false
                   description: Offset of the returned data
+                - in: query
+                  name: banlist
+                  schema:
+                      type: string
+                      example: "2024-01-01"
+                      default: ""
+                  required: false
+                  description: Banlist date or empty if all cards
             responses:
                 "200":
                     description: Success
@@ -174,9 +182,19 @@ paths:
                                     Message:
                                         type: string
                                     Data:
-                                        type: array
-                                        items:
-                                            $ref: "#/components/schemas/CardList"
+                                        type: object
+                                        properties:
+                                            DeckAmount:
+                                                type: integer
+                                                example: 238319
+                                                description: Total deck amount in the requested scope
+                                            List:
+                                                type: array
+                                                items:
+                                                    $ref: "#/components/schemas/CardList"
+                                        required:
+                                            - DeckAmount
+                                            - List
                                 required:
                                     - StatusCode
                                     - Method
@@ -391,10 +409,10 @@ components:
                     type: string
                     example: "/cards/32864"
                     description: Endpoint of the card
-                Percentage:
-                    type: number
-                    example: 31.2536
-                    description: Popularity of the card considering all deck
+                Amount:
+                    type: integer
+                    example: 21978
+                    description: Number of times the card was at least once in a deck
                 Average:
                     type: number
                     example: 2.26374
