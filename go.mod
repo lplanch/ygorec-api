@@ -11,7 +11,6 @@ require (
 	github.com/go-playground/assert/v2 v2.2.0
 	github.com/go-playground/validator/v10 v10.18.0
 	github.com/joho/godotenv v1.3.0
-	github.com/restuwahyu13/go-playground-converter v0.0.5
 	github.com/restuwahyu13/go-supertest v0.0.3
 	github.com/sirupsen/logrus v1.8.1
 	github.com/smartystreets/goconvey v1.6.4
