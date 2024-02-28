@@ -17,10 +17,12 @@ func main() {
 	@description Utils initialisation
 	*/
 	util.InitUptime()
+
 	/**
 	@description Setup Server
 	*/
 	router := SetupRouter()
+
 	/**
 	@description Run Server
 	*/
@@ -32,10 +34,12 @@ func SetupRouter() *gin.Engine {
 	@description Setup Database Connection
 	*/
 	db := config.Connection()
+
 	/**
 	@description Init Router
 	*/
 	router := gin.Default()
+
 	/**
 	@description Setup Mode Application
 	*/
@@ -48,6 +52,12 @@ func SetupRouter() *gin.Engine {
 	} else {
 		gin.SetMode(gin.DebugMode)
 	}
+
+	/**
+	@description Validator Initialization
+	*/
+	util.InitValidator()
+
 	/**
 	@description Setup Middleware
 	*/
@@ -59,6 +69,7 @@ func SetupRouter() *gin.Engine {
 	}))
 	router.Use(helmet.Default())
 	router.Use(gzip.Gzip(gzip.BestCompression))
+
 	/**
 	@description Init All Route
 	*/

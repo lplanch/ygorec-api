@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	listCards "github.com/lplanch/test-go-api/controllers/card-controllers/list"
 	util "github.com/lplanch/test-go-api/utils"
-	gpc "github.com/restuwahyu13/go-playground-converter"
 )
 
 type handler struct {
@@ -32,30 +31,10 @@ func (h *handler) ListCardsHandler(ctx *gin.Context) {
 		input.Banlist = ctx.Query("banlist")
 	}
 
-	config := gpc.ErrorConfig{
-		Options: []gpc.ErrorMetaConfig{
-			{
-				Tag:     "gt",
-				Field:   "Limit",
-				Message: "limit must be > 0 if specified",
-			},
-			{
-				Tag:     "gte",
-				Field:   "Offset",
-				Message: "offset must be >= 0 if specified",
-			},
-			{
-				Tag:     "is-awesome",
-				Field:   "Banlist",
-				Message: "banlist must be a valid banlist",
-			},
-		},
-	}
+	err := util.Validate(&input)
 
-	errResponse, errCount := util.GoValidator(&input, config.Options)
-
-	if errCount > 0 {
-		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodGet, errResponse)
+	if err != nil {
+		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodGet, err)
 		return
 	}
 

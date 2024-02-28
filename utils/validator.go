@@ -1,26 +1,78 @@
 package util
 
 import (
+	"errors"
 	"regexp"
 
 	"github.com/go-playground/validator/v10"
-	gpc "github.com/restuwahyu13/go-playground-converter"
 )
 
+var (
+	validate *validator.Validate
+)
+
+/**
+*** CUSTOMS VALIDATOR FUNCTIONS
+***/
+
 func ValidateBanlist(fl validator.FieldLevel) bool {
-	println("BONJOUR")
-	match, err := regexp.MatchString("[0-9]{4}-[0-9]{2}-[0-9]{2}", fl.Field().String())
+	match, err := regexp.MatchString("^[0-9]{4}-[0-9]{2}-[0-9]{2}$", fl.Field().String())
 	if err != nil {
 		return false
 	}
 	return match
 }
 
-func GoValidator(s interface{}, config []gpc.ErrorMetaConfig) (interface{}, int) {
-	var validate *validator.Validate
-	validators := gpc.NewValidator(validate)
-	bind := gpc.NewBindValidator(validators)
+/**
+*** API ERROR STRINGIFY
+**/
 
-	errResponse, errCount := bind.BindValidator(s, config)
-	return errResponse, errCount
+type ApiError struct {
+	Param   string
+	Message string
+}
+
+func tagToString(fe validator.FieldError) string {
+	switch fe.Tag() {
+	case "required":
+		return "This field is required"
+	case "number":
+		return "Field must be a number"
+	case "gt":
+		return "Field must be greater than " + fe.Param()
+	case "gte":
+		return "Field must be greater or equal than " + fe.Param()
+	case "banlistdate":
+		return "Field must match the banlist date format \"%Y-%m-%d\""
+	}
+	return fe.Error()
+}
+
+func ErrorHandler(err error) []ApiError {
+	var ve validator.ValidationErrors
+	if errors.As(err, &ve) {
+		out := make([]ApiError, len(ve))
+		for i, fe := range ve {
+			out[i] = ApiError{fe.Field(), tagToString(fe)}
+		}
+		return out
+	}
+	return []ApiError{}
+}
+
+/**
+*** INIT & VALIDATE BINDING
+**/
+
+func InitValidator() {
+	validate = validator.New()
+	validate.RegisterValidation("banlistdate", ValidateBanlist)
+}
+
+func Validate(s interface{}) []ApiError {
+	err := validate.Struct(s)
+	if err != nil {
+		return ErrorHandler(err)
+	}
+	return nil
 }

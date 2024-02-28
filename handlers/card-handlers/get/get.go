@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	getCard "github.com/lplanch/test-go-api/controllers/card-controllers/get"
 	util "github.com/lplanch/test-go-api/utils"
-	gpc "github.com/restuwahyu13/go-playground-converter"
 )
 
 type handler struct {
@@ -23,28 +22,14 @@ func (h *handler) GetCardHandler(ctx *gin.Context) {
 	var input getCard.InputGetCard
 	input.ID = ctx.Param("id")
 
-	config := gpc.ErrorConfig{
-		Options: []gpc.ErrorMetaConfig{
-			{
-				Tag:     "required",
-				Field:   "ID",
-				Message: "id is required in path",
-			},
-			{
-				Tag:     "number",
-				Field:   "ID",
-				Message: "id must be a number",
-			},
-		},
-	}
+	err := util.Validate(&input)
 
-	errResponse, errCount := util.GoValidator(&input, config.Options)
-	uint_id, _ := strconv.ParseUint(input.ID, 10, 64)
-
-	if errCount > 0 {
-		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodGet, errResponse)
+	if err != nil {
+		util.ValidatorErrorResponse(ctx, http.StatusBadRequest, http.MethodGet, err)
 		return
 	}
+
+	uint_id, _ := strconv.ParseUint(input.ID, 10, 64)
 
 	var input_service = getCard.InputServiceGetCard{ID: uint_id}
 

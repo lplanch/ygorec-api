@@ -1,7 +1,7 @@
 package listCards
 
 type InputListCards struct {
-	Limit   int    `validate:"gt=0"`
-	Offset  int    `validate:"gte=0"`
-	Banlist string `validate:"is-awesome"`
+	Limit   int    `validate:"number,gt=0"`
+	Offset  int    `validate:"number,gte=0"`
+	Banlist string `validate:"banlistdate"`
 }
