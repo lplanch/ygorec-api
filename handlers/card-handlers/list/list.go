@@ -44,6 +44,11 @@ func (h *handler) ListCardsHandler(ctx *gin.Context) {
 				Field:   "Offset",
 				Message: "offset must be >= 0 if specified",
 			},
+			{
+				Tag:     "is-awesome",
+				Field:   "Banlist",
+				Message: "banlist must be a valid banlist",
+			},
 		},
 	}
 
