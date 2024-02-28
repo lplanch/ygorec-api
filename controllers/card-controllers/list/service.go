@@ -18,7 +18,10 @@ func NewServiceList(repository Repository) *service {
 
 func (s *service) ListCardsService(input *InputListCards) *model.ModelFullListCardStats {
 
-	resultFullListCards := &model.ModelFullListCardStats{DeckAmount: *s.repository.GetDeckAmount(input), Data: *s.repository.ListCardsRepository(input)}
+	resultFullListCards := &model.ModelFullListCardStats{
+		DeckAmount: *s.repository.GetDeckAmount(input),
+		List:       *s.repository.ListCardsRepository(input),
+	}
 
 	return resultFullListCards
 }

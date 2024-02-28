@@ -44,5 +44,5 @@ type ModelListCardStats struct {
 
 type ModelFullListCardStats struct {
 	DeckAmount uint32
-	Data       []ModelListCardStats
+	List       []ModelListCardStats
 }
