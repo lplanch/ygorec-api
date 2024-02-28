@@ -20,13 +20,16 @@ func NewHandlerListCards(service listCards.Service) *handler {
 
 func (h *handler) ListCardsHandler(ctx *gin.Context) {
 
-	input := listCards.InputListCards{Limit: 20, Offset: 0}
+	input := listCards.InputListCards{Limit: 20, Offset: 0, Banlist: ""}
 
 	if len(ctx.Query("limit")) > 0 {
 		input.Limit, _ = strconv.Atoi(ctx.Query("limit"))
 	}
 	if len(ctx.Query("offset")) > 0 {
 		input.Offset, _ = strconv.Atoi(ctx.Query("offset"))
+	}
+	if len(ctx.Query("banlist")) > 0 {
+		input.Banlist = ctx.Query("banlist")
 	}
 
 	config := gpc.ErrorConfig{
