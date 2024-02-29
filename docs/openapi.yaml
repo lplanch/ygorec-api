@@ -414,6 +414,10 @@ components:
                     type: string
                     example: "/cards/32864"
                     description: Endpoint of the card
+                Limitation:
+                    type: integer
+                    example: 3
+                    description: Limitation of the card considering the current banlist
                 Amount:
                     type: integer
                     example: 21978

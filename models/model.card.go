@@ -37,11 +37,12 @@ type ModelListCard struct {
 }
 
 type ModelListCardStats struct {
-	ID      uint64
-	Label   string
-	Url     string
-	Amount  uint32
-	Average float32
+	ID         uint64
+	Label      string
+	Url        string
+	Limitation uint8
+	Amount     uint32
+	Average    float32
 }
 
 type ModelFullListCardStats struct {
