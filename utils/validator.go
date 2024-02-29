@@ -16,6 +16,9 @@ var (
 ***/
 
 func ValidateBanlist(fl validator.FieldLevel) bool {
+	if len(fl.Field().String()) == 0 {
+		return true
+	}
 	match, err := regexp.MatchString("^[0-9]{4}-[0-9]{2}-[0-9]{2}$", fl.Field().String())
 	if err != nil {
 		return false
