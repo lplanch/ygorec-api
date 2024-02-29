@@ -59,7 +59,12 @@ func Connection() *gorm.DB {
 		&model.EnumArchetype{},
 	)
 
+	// PROCEDURES
 	model.AutoMigrateProcedureMvTopCards(db)
+	model.AutoMigrateProcedureMvDeckArchetypes(db)
+
+	// TRIGGERS
+	model.AutoMigrateTriggerMvDeckArchetypes(db)
 
 	if err != nil {
 		logrus.Fatal(err.Error())
