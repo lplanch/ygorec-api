@@ -27,6 +27,7 @@ func (s *service) GetCardService(input *InputServiceGetCard) (*model.ModelCard, 
 	finalCard := model.ModelCard{
 		ID:         resultGetCard.ID,
 		Name:       resultGetCard.Name,
+		Limitation: resultGetCard.Limitation,
 		Desc:       resultGetCard.Desc,
 		Attribute:  resultGetCard.Attribute,
 		Types:      util.ReallySplit(resultGetCard.Types, ","),

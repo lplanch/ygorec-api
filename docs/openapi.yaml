@@ -338,6 +338,10 @@ components:
                 Name:
                     type: string
                     example: "The 13th Grave"
+                Limitation:
+                    type: integer
+                    example: 3
+                    description: Limitation of the card considering the current banlist
                 Desc:
                     type: string
                     example: "A zombie that suddenly appeared from plot #13 - an empty grave."
@@ -374,6 +378,7 @@ components:
             required:
                 - ID
                 - Name
+                - Limitation
                 - Desc
                 - Attribute
                 - Types

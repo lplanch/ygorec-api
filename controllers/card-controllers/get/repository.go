@@ -2,6 +2,7 @@ package getCard
 
 import (
 	model "github.com/lplanch/test-go-api/models"
+	util "github.com/lplanch/test-go-api/utils"
 	"gorm.io/gorm"
 )
 
@@ -44,10 +45,10 @@ func (r *repository) SanitizeCardRepository(input *model.EntityCard) (*model.Mod
 	db := r.db
 	errorCode := make(chan string, 1)
 
-	//SELECT ec.id, group_concat(et.value) AS types FROM entity_cards ec LEFT OUTER JOIN enum_types et ON et.id & ec.type GROUP BY ec.id;
 	getCard := db.Debug().Model(&input).Select(`
 		entity_cards.id,
 		entity_cards.name,
+		(CASE WHEN ISNULL(b.card_id) THEN 3 ELSE b.status END) AS limitation,
 		entity_cards.desc,
 		(SELECT enum_attributes.value FROM enum_attributes WHERE entity_cards.attribute = enum_attributes.id LIMIT 1) AS attribute,
 		(SELECT GROUP_CONCAT(enum_types.value) FROM enum_types WHERE entity_cards.type & enum_types.id) AS types,
@@ -62,7 +63,9 @@ func (r *repository) SanitizeCardRepository(input *model.EntityCard) (*model.Mod
 		entity_cards.def,
 		(SELECT enum_levels.value FROM enum_levels WHERE entity_cards.level = enum_levels.id LIMIT 1) AS level,
 		(SELECT GROUP_CONCAT(enum_categories.value) FROM enum_categories WHERE entity_cards.category & enum_categories.id) AS categories
-	`).Where("entity_cards.id = ?", input.ID).Find(&card)
+	`).Joins(`
+		LEFT OUTER JOIN graph_cards_belong_to_banlists AS b ON b.card_id = entity_cards.id AND b.banlist_id = ?
+	`, util.GodotEnv("LAST_BANLIST")).Where("entity_cards.id = ?", input.ID).Find(&card)
 
 	if getCard.RowsAffected < 1 {
 		errorCode <- "GET_CARD_NOT_FOUND_404"
