@@ -401,6 +401,10 @@ components:
                     type: string
                     example: "/cards/32864"
                     description: Endpoint of the card
+            required:
+                - ID
+                - Label
+                - Url
         CardList:
             properties:
                 ID:
@@ -426,6 +430,13 @@ components:
                     type: number
                     example: 2.26374
                     description: Average amount of the card in each deck that have it at least once
+            required:
+                - ID
+                - Label
+                - Url
+                - Limitation
+                - Amount
+                - Average
         Banlist:
             properties:
                 Date:
@@ -435,6 +446,5 @@ components:
                     type: integer
                     example: 2
             required:
-                - ID
-                - Label
-                - Url
+                - Date
+                - Ot
