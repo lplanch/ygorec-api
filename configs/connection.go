@@ -45,6 +45,7 @@ func Connection() *gorm.DB {
 		&model.EntityBanlist{},
 		// MATERIALIZED VIEWS
 		&model.MvTopCard{},
+		&model.MvDeckArchetypes{},
 		// GRAPHS
 		&model.GraphCardsBelongToDecks{},
 		&model.GraphCardsBelongToBanlists{},
