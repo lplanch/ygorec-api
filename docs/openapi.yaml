@@ -338,6 +338,10 @@ components:
                 Name:
                     type: string
                     example: "The 13th Grave"
+                Limitation:
+                    type: integer
+                    example: 3
+                    description: Limitation of the card considering the current banlist
                 Desc:
                     type: string
                     example: "A zombie that suddenly appeared from plot #13 - an empty grave."
@@ -374,6 +378,7 @@ components:
             required:
                 - ID
                 - Name
+                - Limitation
                 - Desc
                 - Attribute
                 - Types
@@ -396,6 +401,10 @@ components:
                     type: string
                     example: "/cards/32864"
                     description: Endpoint of the card
+            required:
+                - ID
+                - Label
+                - Url
         CardList:
             properties:
                 ID:
@@ -409,6 +418,10 @@ components:
                     type: string
                     example: "/cards/32864"
                     description: Endpoint of the card
+                Limitation:
+                    type: integer
+                    example: 3
+                    description: Limitation of the card considering the current banlist
                 Amount:
                     type: integer
                     example: 21978
@@ -417,6 +430,13 @@ components:
                     type: number
                     example: 2.26374
                     description: Average amount of the card in each deck that have it at least once
+            required:
+                - ID
+                - Label
+                - Url
+                - Limitation
+                - Amount
+                - Average
         Banlist:
             properties:
                 Date:
@@ -426,6 +446,5 @@ components:
                     type: integer
                     example: 2
             required:
-                - ID
-                - Label
-                - Url
+                - Date
+                - Ot
