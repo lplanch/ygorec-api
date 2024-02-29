@@ -118,7 +118,7 @@ class Deck:
                     """
                     INSERT INTO graph_cards_belong_to_decks(card_id, deck_id, category)
                         VALUES (%s, %s, %s);
-                    """, (card_id, self.id, 0)
+                    """, (card_id, self.id, 1)
                 )
             except mysql.connector.errors.IntegrityError:
                 continue
@@ -128,7 +128,7 @@ class Deck:
                     """
                     INSERT INTO graph_cards_belong_to_decks(card_id, deck_id, category)
                         VALUES (%s, %s, %s);
-                    """, (card_id, self.id, 0)
+                    """, (card_id, self.id, 2)
                 )
             except mysql.connector.errors.IntegrityError:
                 continue
