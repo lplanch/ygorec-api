@@ -36,7 +36,7 @@ func AutoMigrateProcedureMvDeckArchetypes(db *gorm.DB) {
 						((c.set_code >> 32) & 65535) = a.id OR ((((c.set_code >> 32) & 65535) & 4095) = (a.id & 4095) AND (((c.set_code >> 32) & 65535) & a.id) = (a.id & 65535)) OR
 						(c.set_code >> 48) = a.id OR (((c.set_code >> 48) & 4095) = (a.id & 4095) AND ((c.set_code >> 48) & a.id) = (a.id & 65535))
 					)
-				GROUP BY a.id;
+				GROUP BY a.id, cd.deck_id;
 		END;
 	`)
 }
@@ -54,7 +54,7 @@ func AutoMigrateTriggerMvDeckArchetypes(db *gorm.DB) {
 			FOR EACH ROW
 		BEGIN
 			CALL refresh_mv_deck_archetype(NEW.id);
-		END;	
+		END;
 	`)
 	db.Exec(`
 		CREATE TRIGGER trigger_mv_deck_archetype_update
