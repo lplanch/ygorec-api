@@ -33,7 +33,8 @@ def update_enums(parsed_data):
                                   port=db_port,
                                   user=db_user,
                                   password=db_password,
-                                  database=db_name)
+                                  database=db_name,
+                                  auth_plugin='mysql_native_password')
     cursor = con.cursor()
     amount = 0
 
@@ -81,7 +82,8 @@ def update_kv_dataeditorx_commit(commit_str):
                                   port=db_port,
                                   user=db_user,
                                   password=db_password,
-                                  database=db_name)
+                                  database=db_name,
+                                  auth_plugin='mysql_native_password')
     cursor = con.cursor()
     cursor.execute(
         "INSERT INTO key_value_stores (`key`, value) VALUES(%s, %s) ON DUPLICATE KEY UPDATE value=VALUES(value);",

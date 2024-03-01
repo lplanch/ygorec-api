@@ -43,7 +43,8 @@ def update_kv_babelcdb_commit(commit_str):
                                   port=db_port,
                                   user=db_user,
                                   password=db_password,
-                                  database=db_name)
+                                  database=db_name,
+                                  auth_plugin='mysql_native_password')
     cursor = con.cursor()
     cursor.execute(
         """

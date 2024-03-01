@@ -55,7 +55,8 @@ async def upsert_banned_cards():
                                   port=db_port,
                                   user=db_user,
                                   password=db_password,
-                                  database=db_name)
+                                  database=db_name,
+                                  auth_plugin='mysql_native_password')
     cursor = con.cursor()
     cursor.execute(
         "SELECT * from entity_banlists;"
@@ -77,7 +78,8 @@ def upsert_banlists(banlist_data):
                                   port=db_port,
                                   user=db_user,
                                   password=db_password,
-                                  database=db_name)
+                                  database=db_name,
+                                  auth_plugin='mysql_native_password')
     cursor = con.cursor()
     amount = 0
 
@@ -108,7 +110,8 @@ def update_kv_banlists_version_date():
                                   port=db_port,
                                   user=db_user,
                                   password=db_password,
-                                  database=db_name)
+                                  database=db_name,
+                                  auth_plugin='mysql_native_password')
     cursor = con.cursor()
     cursor.execute(
         "INSERT INTO key_value_stores (`key`, value) VALUES(%s, %s) ON DUPLICATE KEY UPDATE value=VALUES(value);",
