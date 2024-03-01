@@ -40,7 +40,7 @@ func (r *repository) ListArchetypesRepository(input *InputListArchetypes) *[]mod
 		mv_deck_archetypes.weight > 5
 	`).Joins(`
 		JOIN enum_archetypes a ON a.id = mv_deck_archetypes.archetype_id
-	`).Group("archetype_id").Order("deck_amount DESC, card_amount DESC").Limit(input.Limit).Offset(input.Offset).Find(&archetypes)
+	`).Group("archetype_id").Order("deck_amount DESC, card_amount DESC, label ASC").Limit(input.Limit).Offset(input.Offset).Find(&archetypes)
 
 	return &archetypes
 }
