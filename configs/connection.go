@@ -59,6 +59,9 @@ func Connection() *gorm.DB {
 		&model.EnumArchetype{},
 	)
 
+	// FUNCTIONS
+	model.AutoMigrateFunctionMatchArchetype(db)
+
 	// PROCEDURES
 	model.AutoMigrateProcedureMvTopCards(db)
 	model.AutoMigrateProcedureMvDeckArchetypes(db)

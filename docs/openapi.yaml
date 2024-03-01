@@ -247,6 +247,59 @@ paths:
                 "500":
                     description: Could not get API imported data
     ############################
+    ## GET ARCHETYPES ENDPOINT
+    ############################
+    /archetypes:
+        get:
+            tags:
+                - Archetypes
+            summary: List all existing archetypes sorted by the most used
+            parameters:
+                - in: query
+                  name: limit
+                  schema:
+                      type: integer
+                      example: 50
+                      default: 20
+                  required: false
+                  description: Limit of the returned data
+                - in: query
+                  name: offset
+                  schema:
+                      type: integer
+                      example: 50
+                      default: 0
+                  required: false
+                  description: Offset of the returned data
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    StatusCode:
+                                        type: integer
+                                        format: number
+                                        example: 200
+                                    Method:
+                                        type: string
+                                        example: GET
+                                    Message:
+                                        type: string
+                                    Data:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/Archetype"
+                                required:
+                                    - StatusCode
+                                    - Method
+                                    - Message
+                                    - Data
+                "500":
+                    description: Could not get API imported data
+    ############################
     ## GET BANLISTS ENDPOINT
     ############################
     /banlists:
@@ -437,6 +490,29 @@ components:
                 - Limitation
                 - Amount
                 - Average
+        Archetype:
+            properties:
+                ArchetypeID:
+                    type: integer
+                    example: 517
+                Label:
+                    type: string
+                    example: "Snake-Eye"
+                DeckAmount:
+                    type: integer
+                    example: 39
+                CardAmount:
+                    type: integer
+                    example: 382
+                MostUsedCardID:
+                    type: integer
+                    example: 89023486
+            required:
+                - ArchetypeID
+                - Label
+                - DeckAmount
+                - CardAmount
+                - MostUsedCardID
         Banlist:
             properties:
                 Date:

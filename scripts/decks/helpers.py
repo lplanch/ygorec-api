@@ -158,7 +158,8 @@ def get_kv_lastupdate(key):
                                   port=db_port,
                                   user=db_user,
                                   password=db_password,
-                                  database=db_name)
+                                  database=db_name,
+                                  auth_plugin='mysql_native_password')
     cursor = con.cursor()
     cursor.execute(
         "SELECT value FROM key_value_stores WHERE `key` = CONCAT('last_update_', %s) LIMIT 1;",
@@ -175,9 +176,9 @@ def update_kv_lastupdate(key: str, date: datetime.datetime):
                                   port=db_port,
                                   user=db_user,
                                   password=db_password,
-                                  database=db_name)
+                                  database=db_name,
+                                  auth_plugin='mysql_native_password')
     cursor = con.cursor()
-    print(date.isoformat())
     cursor.execute(
         "INSERT INTO key_value_stores (`key`, value) VALUES(CONCAT('last_update_', %s), %s) ON DUPLICATE KEY UPDATE value=VALUES(value);",
         (key, date.isoformat())
