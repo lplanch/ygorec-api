@@ -48,4 +48,4 @@ ARG DB_NAME=railway
 
 RUN make goprod
 EXPOSE $PORT
-CMD ["sh", "-c", "make upsert-data && ./main"]
+CMD ["sh", "-c", "make upsert-data && make generate-views && ./main"]

@@ -6,6 +6,6 @@ type GraphCardsBelongToDecks struct {
 	Category uint8  `gorm:"type:INTEGER;NOT NULL;DEFAULT NULL"`
 
 	// Constraint
-	Card EntityCard `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Deck EntityDeck `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Card EntityCard `gorm:"foreignKey:CardID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Deck EntityDeck `gorm:"foreignKey:DeckID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
