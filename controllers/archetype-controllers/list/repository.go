@@ -21,26 +21,17 @@ func (r *repository) ListArchetypesRepository(input *InputListArchetypes) *[]mod
 
 	var archetypes []model.ModelArchetype
 
-	db := r.db.Model(&model.MvDeckArchetypes{})
+	db := r.db.Model(&model.MvTopArchetype{})
 
 	db.Debug().Select(`
-		mv_deck_archetypes.archetype_id,
+		archetype_id,
 		a.value AS label,
-		COUNT(mv_deck_archetypes.archetype_id) AS deck_amount,
-		SUM(mv_deck_archetypes.weight) AS card_amount,
-		(
-			SELECT card_id
-			FROM mv_top_cards
-			LEFT OUTER JOIN entity_cards e ON e.id = card_id
-			WHERE match_archetype(e.set_code, mv_deck_archetypes.archetype_id)
-			ORDER BY amount DESC
-			LIMIT 1
-		) AS most_used_card_id
-	`).Where(`
-		mv_deck_archetypes.weight > 5
+		deck_amount,
+		card_amount,
+		most_used_card_id
 	`).Joins(`
-		JOIN enum_archetypes a ON a.id = mv_deck_archetypes.archetype_id
-	`).Group("archetype_id").Order("deck_amount DESC, card_amount DESC, label ASC").Limit(input.Limit).Offset(input.Offset).Find(&archetypes)
+		JOIN enum_archetypes a ON a.id = archetype_id
+	`).Order("deck_amount DESC, card_amount DESC, label ASC").Limit(input.Limit).Offset(input.Offset).Find(&archetypes)
 
 	return &archetypes
 }

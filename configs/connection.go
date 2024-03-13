@@ -46,6 +46,7 @@ func Connection() *gorm.DB {
 		// MATERIALIZED VIEWS
 		&model.MvTopCard{},
 		&model.MvDeckArchetypes{},
+		&model.MvTopArchetype{},
 		// GRAPHS
 		&model.GraphCardsBelongToDecks{},
 		&model.GraphCardsBelongToBanlists{},
@@ -65,6 +66,7 @@ func Connection() *gorm.DB {
 	// PROCEDURES
 	model.AutoMigrateProcedureMvTopCards(db)
 	model.AutoMigrateProcedureMvDeckArchetypes(db)
+	model.AutoMigrateProcedureMvTopArchetypes(db)
 
 	// TRIGGERS
 	model.AutoMigrateTriggerMvDeckArchetypes(db)

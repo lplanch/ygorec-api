@@ -3,14 +3,14 @@ package model
 import "gorm.io/gorm"
 
 type MvTopCard struct {
-	CardID    uint64  `gorm:"index:idx_card_banlist,unique,foreignKey:Card"`
-	BanlistID string  `gorm:"index:idx_card_banlist,unique,foreignKey:Banlist;DEFAULT NULL"`
+	CardID    uint64  `gorm:"index:idx_card_banlist,unique"`
+	BanlistID string  `gorm:"index:idx_card_banlist,unique;DEFAULT NULL"`
 	Amount    uint32  `gorm:"index:INT UNSIGNED;NOT NULL;DEFAULT NULL"`
 	Average   float32 `gorm:"DECIMAL(6,5);NOT NULL;DEFAULT NULL"`
 
 	// Constraint
-	Card    EntityCard    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Banlist EntityBanlist `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Card    EntityCard    `gorm:"foreignKey:CardID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Banlist EntityBanlist `gorm:"foreignKey:BanlistID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func AutoMigrateProcedureMvTopCards(db *gorm.DB) {

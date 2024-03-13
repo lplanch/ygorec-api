@@ -11,8 +11,6 @@ db_host = os.environ.get('DB_HOST', '127.0.0.1')
 db_port = os.environ.get('DB_PORT', '3306')
 db_name = os.environ.get('DB_NAME', 'railway')
 
-babelcdb_path = os.environ.get('BABELCDB_PATH', './data/BabelCDB/')
-
 
 def get_last_banlist() -> str:
     con = mysql.connector.connect(host=db_host,

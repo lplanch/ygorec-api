@@ -3,13 +3,13 @@ package model
 import "gorm.io/gorm"
 
 type MvDeckArchetypes struct {
-	DeckID      string `gorm:"index:idx_mv_deck_archetypes,unique,foreignKey:Deck"`
-	ArchetypeID uint64 `gorm:"index:idx_mv_deck_archetypes,unique,foreignKey:Archetype"`
+	DeckID      string `gorm:"index:idx_mv_deck_archetypes,unique"`
+	ArchetypeID uint64 `gorm:"index:idx_mv_deck_archetypes,unique"`
 	Weight      uint8  `gorm:"type:TINYINT UNSIGNED;NOT NULL"`
 
 	// Constraint
-	Deck      EntityDeck    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Archetype EnumArchetype `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Deck      EntityDeck    `gorm:"foreignKey:DeckID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Archetype EnumArchetype `gorm:"foreignKey:ArchetypeID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func AutoMigrateProcedureMvDeckArchetypes(db *gorm.DB) {
