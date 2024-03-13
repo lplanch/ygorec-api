@@ -51,7 +51,9 @@ FETCH_CARDS := ./scripts/fetch_cards.sh
 FETCH_ENUMS := ./scripts/import_enums_data.py
 FETCH_BANLISTS := ./scripts/fetch_banlists.sh
 FETCH_DECKS := ./scripts/fetch_decks.sh
+
 MV_DECK_ARCHETYPES := ./scripts/generate_deck_archetypes.py
+MV_TOP_CARDS := ./scripts/generate_top_cards.py
 
 upsert-data:
 	${FETCH_CARDS}
@@ -61,5 +63,6 @@ upsert-data:
 
 generate-views:
 	${MV_DECK_ARCHETYPES}
+	${MV_TOP_CARDS}
 
 .PHONY: dcb dcuf dcubf dcu dcd goinstall godev goprod gotest goformat upsert-data generate-views
