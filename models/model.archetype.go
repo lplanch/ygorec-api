@@ -6,4 +6,5 @@ type ModelArchetype struct {
 	DeckAmount     uint32
 	CardAmount     uint32
 	MostUsedCardID uint64
+	Url            string
 }

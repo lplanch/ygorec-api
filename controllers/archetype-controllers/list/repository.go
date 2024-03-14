@@ -28,7 +28,8 @@ func (r *repository) ListArchetypesRepository(input *InputListArchetypes) *[]mod
 		a.value AS label,
 		deck_amount,
 		card_amount,
-		most_used_card_id
+		most_used_card_id,
+		CONCAT('/archetypes/', CONVERT(LOWER(REPLACE(a.value, ' ', '-')), char)) AS url
 	`).Joins(`
 		JOIN enum_archetypes a ON a.id = archetype_id
 	`).Order("deck_amount DESC, card_amount DESC, label ASC").Limit(input.Limit).Offset(input.Offset).Find(&archetypes)

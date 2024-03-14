@@ -300,6 +300,67 @@ paths:
                 "500":
                     description: Could not get API imported data
     ############################
+    ## GET ARCHETYPE TOP CARDS
+    ############################
+    /archetypes/{archetype_name}:
+        get:
+            tags:
+                - Archetypes
+            summary: Get most used card in archetype
+            description: List most used cards by archetype
+            parameters:
+                - in: path
+                  name: archetype_name
+                  schema:
+                      type: string
+                      example: "dark-world"
+                  required: true
+                  description: "Archetype name in lowercase with spaces replaced by '-'"
+                - in: query
+                  name: limit
+                  schema:
+                      type: integer
+                      example: 50
+                      default: 20
+                  required: false
+                  description: Limit of the returned data
+                - in: query
+                  name: offset
+                  schema:
+                      type: integer
+                      example: 50
+                      default: 0
+                  required: false
+                  description: Offset of the returned data
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    StatusCode:
+                                        type: integer
+                                        format: number
+                                        example: 200
+                                    Method:
+                                        type: string
+                                        example: GET
+                                    Message:
+                                        type: string
+                                    Data:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/CardList"
+                                required:
+                                    - StatusCode
+                                    - Method
+                                    - Message
+                                    - Data
+                "500":
+                    description: Could not get API imported data
+    ############################
     ## GET BANLISTS ENDPOINT
     ############################
     /banlists:
@@ -507,12 +568,16 @@ components:
                 MostUsedCardID:
                     type: integer
                     example: 89023486
+                Url:
+                    type: string
+                    example: /archetypes/dark-world
             required:
                 - ArchetypeID
                 - Label
                 - DeckAmount
                 - CardAmount
                 - MostUsedCardID
+                - Url
         Banlist:
             properties:
                 Date:
