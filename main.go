@@ -39,6 +39,8 @@ func SetupRouter() *gin.Engine {
 	@description Init Router
 	*/
 	router := gin.Default()
+	router.UseRawPath = true
+	router.UnescapePathValues = true
 
 	/**
 	@description Setup Mode Application
