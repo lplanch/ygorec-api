@@ -6,7 +6,7 @@ import (
 
 type Service interface {
 	GetArchetypeIDFromNameService(input *InputGetArchetype) (*InputServiceGetArchetype, string)
-	GetArchetypeService(input *InputServiceGetArchetype) (*[]model.ModelListCardStats, string)
+	GetArchetypeService(input *InputServiceGetArchetype) *model.ModelFullListArchetypeCardStats
 }
 
 type service struct {
@@ -23,9 +23,13 @@ func (s *service) GetArchetypeIDFromNameService(input *InputGetArchetype) (*Inpu
 	return resultGetArchetypeID, errGetVersion
 }
 
-func (s *service) GetArchetypeService(input *InputServiceGetArchetype) (*[]model.ModelListCardStats, string) {
+func (s *service) GetArchetypeService(input *InputServiceGetArchetype) *model.ModelFullListArchetypeCardStats {
 
-	resultGetArchetype, errGetVersion := s.repository.GetArchetypeRepository(input)
+	resultFullListCards := &model.ModelFullListArchetypeCardStats{
+		DeckAmount:     *s.repository.GetArchetypeDeckAmount(input),
+		ArchetypeCards: *s.repository.GetArchetypeCardsRepository(input),
+		OtherCards:     *s.repository.GetArchetypeOtherCardsRepository(input),
+	}
 
-	return resultGetArchetype, errGetVersion
+	return resultFullListCards
 }

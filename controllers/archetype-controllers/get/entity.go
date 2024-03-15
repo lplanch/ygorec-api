@@ -1,13 +1,9 @@
 package getArchetype
 
 type InputGetArchetype struct {
-	Value  string `validate:"required"`
-	Limit  int    `validate:"number,gt=0"`
-	Offset int    `validate:"number,gte=0"`
+	Value string `validate:"required"`
 }
 
 type InputServiceGetArchetype struct {
-	ID     uint64
-	Limit  int
-	Offset int
+	ID uint64
 }

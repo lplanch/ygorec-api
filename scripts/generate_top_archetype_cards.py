@@ -11,7 +11,7 @@ db_port = os.environ.get('DB_PORT', '3306')
 db_name = os.environ.get('DB_NAME', 'railway')
 
 
-def get_ungenerated_decks() -> list[str]:
+def get_all_archetypes_id() -> list[str]:
     con = mysql.connector.connect(host=db_host,
                                   port=db_port,
                                   user=db_user,
@@ -20,35 +20,35 @@ def get_ungenerated_decks() -> list[str]:
     cursor = con.cursor()
     cursor.execute('''
                    SELECT id
-                   FROM entity_decks
-                   WHERE NOT EXISTS (SELECT * FROM mv_deck_archetypes WHERE deck_id = id);
+                   FROM enum_archetypes;
                    ''')
     result_set = cursor.fetchall()
     con.close()
     return list(map(lambda set: set[0], result_set))
 
 
-def generate_archetypes_mv(ungenerated_deck_ids: list[str]):
+def generate_archetypes_cards_mv(archetype_ids: list[str]):
     con = mysql.connector.connect(host=db_host,
                                   port=db_port,
                                   user=db_user,
                                   password=db_password,
                                   database=db_name)
     cursor = con.cursor()
-    print('Generating missing deck archetypes...')
-    print('To generate: %s' % len(ungenerated_deck_ids))
-    for index, deck_id in enumerate(ungenerated_deck_ids):
-        if index % round(len(ungenerated_deck_ids) / 40) == 0:
+    print('Refreshing archetype cards...')
+    print('To refresh: %s' % len(archetype_ids))
+    for index, archetype_id in enumerate(archetype_ids):
+        if index % round(len(archetype_ids) / 40) == 0:
             print('#', end='', flush=True)
-        cursor.execute('CALL refresh_mv_deck_archetype(%s)', (deck_id,))
-    print('\nMissing deck archetypes generated!')
+        cursor.execute(
+            'CALL refresh_mv_top_archetype_cards(%s)', (archetype_id,))
+    print('\nArchetype cards refreshed!')
     con.commit()
     con.close()
 
 
 def main() -> int:
-    ungenerated_deck_ids = get_ungenerated_decks()
-    generate_archetypes_mv(ungenerated_deck_ids)
+    archetype_ids = get_all_archetypes_id()
+    generate_archetypes_cards_mv(archetype_ids)
 
 
 if __name__ == '__main__':

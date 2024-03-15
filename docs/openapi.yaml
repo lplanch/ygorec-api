@@ -316,22 +316,6 @@ paths:
                       example: "dark-world"
                   required: true
                   description: "Archetype name in lowercase with spaces replaced by '-'"
-                - in: query
-                  name: limit
-                  schema:
-                      type: integer
-                      example: 50
-                      default: 20
-                  required: false
-                  description: Limit of the returned data
-                - in: query
-                  name: offset
-                  schema:
-                      type: integer
-                      example: 50
-                      default: 0
-                  required: false
-                  description: Offset of the returned data
             responses:
                 "200":
                     description: Success
@@ -350,9 +334,26 @@ paths:
                                     Message:
                                         type: string
                                     Data:
-                                        type: array
-                                        items:
-                                            $ref: "#/components/schemas/CardList"
+                                        type: object
+                                        properties:
+                                            DeckAmount:
+                                                type: integer
+                                                example: 238319
+                                                description: Total deck amount in the requested scope
+                                            ArchetypeCards:
+                                                type: array
+                                                description: All cards from the archetype found in decks of this archetype
+                                                items:
+                                                    $ref: "#/components/schemas/CardList"
+                                            OtherCards:
+                                                type: array
+                                                description: "Other cards that are played with the archetype, with a limit of 100"
+                                                items:
+                                                    $ref: "#/components/schemas/CardList"
+                                        required:
+                                            - DeckAmount
+                                            - ArchetypeCards
+                                            - OtherCards
                                 required:
                                     - StatusCode
                                     - Method

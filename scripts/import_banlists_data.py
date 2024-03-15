@@ -3,7 +3,6 @@
 import asyncio
 import datetime
 import os
-import sys
 import aiohttp
 import requests
 import mysql.connector

@@ -47,6 +47,7 @@ func Connection() *gorm.DB {
 		&model.MvTopCard{},
 		&model.MvDeckArchetypes{},
 		&model.MvTopArchetype{},
+		&model.MvTopArchetypeCard{},
 		// GRAPHS
 		&model.GraphCardsBelongToDecks{},
 		&model.GraphCardsBelongToBanlists{},
@@ -67,6 +68,7 @@ func Connection() *gorm.DB {
 	model.AutoMigrateProcedureMvTopCards(db)
 	model.AutoMigrateProcedureMvDeckArchetypes(db)
 	model.AutoMigrateProcedureMvTopArchetypes(db)
+	model.AutoMigrateProcedureMvTopArchetypeCards(db)
 
 	// TRIGGERS
 	model.AutoMigrateTriggerMvDeckArchetypes(db)

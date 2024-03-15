@@ -7,8 +7,10 @@ import (
 )
 
 type Repository interface {
+	GetArchetypeDeckAmount(input *InputServiceGetArchetype) *uint32
 	GetArchetypeInputServiceRepository(input *InputGetArchetype) (*InputServiceGetArchetype, string)
-	GetArchetypeRepository(input *InputServiceGetArchetype) (*[]model.ModelListCardStats, string)
+	GetArchetypeCardsRepository(input *InputServiceGetArchetype) *[]model.ModelListCardStats
+	GetArchetypeOtherCardsRepository(input *InputServiceGetArchetype) *[]model.ModelListCardStats
 }
 
 type repository struct {
@@ -17,6 +19,21 @@ type repository struct {
 
 func NewRepositoryGet(db *gorm.DB) *repository {
 	return &repository{db: db}
+}
+
+func (r *repository) GetArchetypeDeckAmount(input *InputServiceGetArchetype) *uint32 {
+
+	var total uint32
+
+	db := r.db.Model(&model.MvDeckArchetypes{})
+
+	db.Debug().Select(`
+		COUNT(*)
+	`).Where(`
+		archetype_id = ? AND weight > 5
+	`, input.ID).Find(&total)
+
+	return &total
 }
 
 func (r *repository) GetArchetypeInputServiceRepository(input *InputGetArchetype) (*InputServiceGetArchetype, string) {
@@ -30,64 +47,65 @@ func (r *repository) GetArchetypeInputServiceRepository(input *InputGetArchetype
 
 	if getArchetype.RowsAffected < 1 {
 		errorCode <- "GET_ARCHETYPE_INPUT_SERVICE_NOT_FOUND_404"
-		return &InputServiceGetArchetype{ID: archetypeID, Limit: input.Limit, Offset: input.Offset}, <-errorCode
+		return &InputServiceGetArchetype{ID: archetypeID}, <-errorCode
 	} else {
 		errorCode <- "nil"
 	}
 
-	return &InputServiceGetArchetype{ID: archetypeID, Limit: input.Limit, Offset: input.Offset}, <-errorCode
+	return &InputServiceGetArchetype{ID: archetypeID}, <-errorCode
 }
 
-func (r *repository) GetArchetypeRepository(input *InputServiceGetArchetype) (*[]model.ModelListCardStats, string) {
+func (r *repository) GetArchetypeCardsRepository(input *InputServiceGetArchetype) *[]model.ModelListCardStats {
 
 	var topArchetypeCards []model.ModelListCardStats
 
 	db := r.db
-	errorCode := make(chan string, 1)
 
-	getArchetype := db.Debug().Raw(`
+	db.Debug().Raw(`
 		SELECT
-			b.card_id AS id,
+			mv.card_id AS id,
+			ec.name AS label,
+			CONCAT('/cards/', CONVERT(mv.card_id, char)) AS url,
+			(CASE WHEN ISNULL(ban.card_id) THEN 3 ELSE ban.status END) AS limitation,
+			mv.deck_amount AS amount,
+			mv.card_amount / mv.deck_amount AS average
+		FROM mv_top_archetype_cards mv
+		JOIN entity_cards ec ON ec.id = mv.card_id
+		LEFT OUTER JOIN graph_cards_belong_to_banlists AS ban ON ban.card_id = mv.card_id AND ban.banlist_id = ?
+			WHERE mv.archetype_id = ? AND match_archetype(ec.set_code, mv.archetype_id)
+			ORDER BY mv.deck_amount DESC, mv.card_amount DESC, mv.card_id ASC;
+	`, util.GodotEnv("LAST_BANLIST"), input.ID).Find(&topArchetypeCards)
+
+	return &topArchetypeCards
+}
+
+func (r *repository) GetArchetypeOtherCardsRepository(input *InputServiceGetArchetype) *[]model.ModelListCardStats {
+
+	var topArchetypeCards []model.ModelListCardStats
+
+	db := r.db
+
+	db.Debug().Raw(`
+		SELECT
+			mv.card_id AS id,
 			(
 				SELECT
 					name
 				FROM
 					entity_cards
 				WHERE
-					id = b.card_id
+					id = mv.card_id
 			) AS label,
-			CONCAT('/cards/', CONVERT(b.card_id, char)) AS url,
+			CONCAT('/cards/', CONVERT(mv.card_id, char)) AS url,
 			(CASE WHEN ISNULL(ban.card_id) THEN 3 ELSE ban.status END) AS limitation,
-			COUNT(b.CardAmount) AS amount,
-			AVG(b.CardAmount) AS average
-		FROM
-			(
-				SELECT
-					da.deck_id,
-					c_d.card_id,
-					COUNT(c_d.card_id) AS CardAmount
-				FROM
-					mv_deck_archetypes da
-					LEFT JOIN graph_cards_belong_to_decks c_d ON c_d.deck_id = da.deck_id
-				WHERE
-					da.archetype_id = ?
-					AND da.weight > 5
-				GROUP BY
-					da.deck_id,
-					c_d.card_id
-			) b
-		LEFT OUTER JOIN graph_cards_belong_to_banlists AS ban ON ban.card_id = b.card_id AND ban.banlist_id = ?
-			GROUP BY b.card_id, ban.status
-			ORDER BY amount DESC, average DESC, id ASC
-			LIMIT ?, ?;
-	`, input.ID, util.GodotEnv("LAST_BANLIST"), input.Offset, input.Limit).Find(&topArchetypeCards)
+			mv.deck_amount AS amount,
+			mv.card_amount / mv.deck_amount AS average
+		FROM mv_top_archetype_cards mv
+		JOIN entity_cards ec ON ec.id = mv.card_id
+		LEFT OUTER JOIN graph_cards_belong_to_banlists AS ban ON ban.card_id = mv.card_id AND ban.banlist_id = ?
+			WHERE mv.archetype_id = ? AND NOT match_archetype(ec.set_code, mv.archetype_id)
+			ORDER BY mv.deck_amount DESC, mv.card_amount DESC, mv.card_id ASC;
+	`, util.GodotEnv("LAST_BANLIST"), input.ID).Find(&topArchetypeCards)
 
-	if getArchetype.RowsAffected < 1 {
-		errorCode <- "GET_ARCHETYPE_NOT_FOUND_404"
-		return &topArchetypeCards, <-errorCode
-	} else {
-		errorCode <- "nil"
-	}
-
-	return &topArchetypeCards, <-errorCode
+	return &topArchetypeCards
 }

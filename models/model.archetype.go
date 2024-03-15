@@ -8,3 +8,9 @@ type ModelArchetype struct {
 	MostUsedCardID uint64
 	Url            string
 }
+
+type ModelFullListArchetypeCardStats struct {
+	DeckAmount     uint32
+	ArchetypeCards []ModelListCardStats
+	OtherCards     []ModelListCardStats
+}
