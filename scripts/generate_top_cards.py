@@ -2,7 +2,6 @@
 
 import os
 import sys
-import sqlite3
 import mysql.connector
 
 db_user = os.environ.get('DB_USER', 'root')
