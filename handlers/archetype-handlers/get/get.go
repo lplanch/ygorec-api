@@ -2,7 +2,6 @@ package handlerGetArchetype
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	getArchetype "github.com/lplanch/test-go-api/controllers/archetype-controllers/get"
@@ -19,16 +18,8 @@ func NewHandlerGetArchetype(service getArchetype.Service) *handler {
 
 func (h *handler) GetArchetypeHandler(ctx *gin.Context) {
 
-	var input = getArchetype.InputGetArchetype{Limit: 20, Offset: 0}
-
+	var input = getArchetype.InputGetArchetype{}
 	input.Value = ctx.Param("value")
-
-	if len(ctx.Query("limit")) > 0 {
-		input.Limit, _ = strconv.Atoi(ctx.Query("limit"))
-	}
-	if len(ctx.Query("offset")) > 0 {
-		input.Offset, _ = strconv.Atoi(ctx.Query("offset"))
-	}
 
 	err := util.Validate(&input)
 
@@ -46,15 +37,7 @@ func (h *handler) GetArchetypeHandler(ctx *gin.Context) {
 		return
 	}
 
-	getArchetype, errGetArchetype := h.service.GetArchetypeService(input_service)
+	getArchetype := h.service.GetArchetypeService(input_service)
 
-	switch errGetArchetype {
-
-	case "GET_ARCHETYPE_NOT_FOUND_404":
-		util.APIResponse(ctx, "Archetype data not found", http.StatusNotFound, http.MethodGet, nil)
-		return
-
-	default:
-		util.APIResponse(ctx, "Archetype data found", http.StatusOK, http.MethodGet, getArchetype)
-	}
+	util.APIResponse(ctx, "Archetype data found", http.StatusOK, http.MethodGet, getArchetype)
 }
