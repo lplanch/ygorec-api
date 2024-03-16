@@ -9,6 +9,7 @@ import (
 type Repository interface {
 	GetCardRepository(input *model.EntityCard) (*model.EntityCard, string)
 	SanitizeCardRepository(input *model.EntityCard) (*model.ModelDbCard, string)
+	GetCardArchetypes(archetype_names []string) *[]model.ModelArchetype
 }
 
 type repository struct {
@@ -70,4 +71,26 @@ func (r *repository) SanitizeCardRepository(input *model.EntityCard) (*model.Mod
 	}
 
 	return &card, <-errorCode
+}
+
+func (r *repository) GetCardArchetypes(archetype_names []string) *[]model.ModelArchetype {
+
+	var archetypes []model.ModelArchetype
+
+	db := r.db.Model(&model.MvTopArchetype{})
+
+	db.Debug().Select(`
+		archetype_id,
+		a.value AS label,
+		deck_amount,
+		card_amount,
+		most_used_card_id,
+		CONCAT('/archetypes/', CONVERT(LOWER(REPLACE(a.value, ' ', '-')), char)) AS url
+	`).Joins(`
+		JOIN enum_archetypes a ON a.value IN ?
+	`, archetype_names).Where(`
+		archetype_id = a.id
+	`).Find(&archetypes)
+
+	return &archetypes
 }

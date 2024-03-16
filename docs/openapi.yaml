@@ -486,7 +486,7 @@ components:
                 Archetypes:
                     type: array
                     items:
-                        type: string
+                        $ref: "#/components/schemas/Archetype"
                 Atk:
                     type: integer
                     example: 1200
