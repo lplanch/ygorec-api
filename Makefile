@@ -56,6 +56,7 @@ MV_DECK_ARCHETYPES := ./scripts/generate_deck_archetypes.py
 MV_TOP_ARCHETYPES := ./scripts/generate_top_archetypes.py
 MV_TOP_CARDS := ./scripts/generate_top_cards.py
 MV_TOP_ARCHETYPE_CARDS := ./scripts/generate_top_archetype_cards.py
+MV_TOP_RELATED_CARDS := ./scripts/generate_top_related_cards.py
 
 upsert-data:
 	${FETCH_CARDS}
@@ -68,5 +69,6 @@ generate-views:
 	${MV_TOP_ARCHETYPES}
 	${MV_TOP_CARDS}
 	${MV_TOP_ARCHETYPE_CARDS}
+	${MV_TOP_RELATED_CARDS}
 
 .PHONY: dcb dcuf dcubf dcu dcd goinstall godev goprod gotest goformat upsert-data generate-views

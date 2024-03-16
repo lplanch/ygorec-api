@@ -82,34 +82,28 @@ func (r *repository) ListRelatedCardsRepository(input *InputListCards) *[]model.
 
 	var cards []model.ModelListCardStats
 
-	db := r.db
+	db := r.db.Model(&model.MvTopRelatedCards{})
 
-	db.Debug().Raw(`
-		SELECT
-			a.card_id AS id,
-			e.name AS label,
-			CONCAT('/cards/', CONVERT(a.card_id, char)) AS url,
-			(CASE WHEN ISNULL(ban.card_id) THEN 3 ELSE ban.status END) AS limitation,
-			COUNT(a.amount) AS amount,
-			AVG(a.amount) AS average
-		FROM (
-			SELECT
-				g.card_id,
-				COUNT(g.card_id) AS amount
-			FROM graph_cards_belong_to_decks g
-				WHERE g.card_id != ? AND EXISTS(
-					SELECT deck_id FROM graph_cards_belong_to_decks
-					WHERE card_id = ? AND deck_id = g.deck_id
-					GROUP BY deck_id, card_id
-				)
-				GROUP BY g.card_id, g.deck_id
-		) a
-		JOIN entity_cards e ON e.id = a.card_id
-		LEFT OUTER JOIN graph_cards_belong_to_banlists AS ban ON ban.card_id = a.card_id AND ban.banlist_id = ?
-			GROUP BY a.card_id, ban.status
-			ORDER BY amount DESC, average DESC, a.card_id ASC
-			LIMIT ?, ?;
-	`, input.CardID, input.CardID, util.GodotEnv("LAST_BANLIST"), input.Offset, input.Limit).Find(&cards)
+	db.Debug().Select(`
+		to_card_id AS id,
+		e.name AS label,
+		CONCAT('/cards/', CONVERT(to_card_id, char)) AS url,
+		(CASE WHEN ISNULL(ban.card_id) THEN 3 ELSE ban.status END) AS limitation,
+		deck_amount AS amount,
+		card_amount / deck_amount AS average
+	`).Joins(`
+		JOIN entity_cards e ON e.id = to_card_id
+	`).Joins(`
+		LEFT OUTER JOIN graph_cards_belong_to_banlists AS ban ON ban.card_id = to_card_id AND ban.banlist_id = ?
+	`, util.GodotEnv("LAST_BANLIST")).Where(`
+		from_card_id = ?
+	`, input.CardID).Order(`
+		amount DESC
+	`).Order(`
+		average DESC
+	`).Order(`
+		to_card_id ASC
+	`).Limit(input.Limit).Offset(input.Offset).Find(&cards)
 
 	return &cards
 }

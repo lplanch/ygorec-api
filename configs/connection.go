@@ -48,6 +48,7 @@ func Connection() *gorm.DB {
 		&model.MvDeckArchetypes{},
 		&model.MvTopArchetype{},
 		&model.MvTopArchetypeCard{},
+		&model.MvTopRelatedCards{},
 		// GRAPHS
 		&model.GraphCardsBelongToDecks{},
 		&model.GraphCardsBelongToBanlists{},
