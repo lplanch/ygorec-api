@@ -18,6 +18,14 @@ func NewServiceList(repository Repository) *service {
 
 func (s *service) ListCardsService(input *InputListCards) *model.ModelFullListCardStats {
 
+	if input.CardID > 0 {
+		resultFullListCards := &model.ModelFullListCardStats{
+			DeckAmount: *s.repository.GetCardDeckAmount(input),
+			List:       *s.repository.ListRelatedCardsRepository(input),
+		}
+		return resultFullListCards
+	}
+
 	resultFullListCards := &model.ModelFullListCardStats{
 		DeckAmount: *s.repository.GetDeckAmount(input),
 		List:       *s.repository.ListCardsRepository(input),

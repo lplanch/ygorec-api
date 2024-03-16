@@ -161,9 +161,15 @@ paths:
                   schema:
                       type: string
                       example: "2024-01-01"
-                      default: ""
                   required: false
                   description: Banlist date or empty if all cards
+                - in: query
+                  name: card_id
+                  schema:
+                      type: integer
+                      example: 14558127
+                  required: false
+                  description: Card id to fetch top cards played with a specific one
             responses:
                 "200":
                     description: Success

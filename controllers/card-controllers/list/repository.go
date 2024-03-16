@@ -8,7 +8,9 @@ import (
 
 type Repository interface {
 	GetDeckAmount(input *InputListCards) *uint32
+	GetCardDeckAmount(input *InputListCards) *uint32
 	ListCardsRepository(input *InputListCards) *[]model.ModelListCardStats
+	ListRelatedCardsRepository(input *InputListCards) *[]model.ModelListCardStats
 }
 
 type repository struct {
@@ -30,6 +32,21 @@ func (r *repository) GetDeckAmount(input *InputListCards) *uint32 {
 	`).Where(`
 		"" = ? OR updated_at > ?
 	`, input.Banlist, input.Banlist).Find(&total)
+
+	return &total
+}
+
+func (r *repository) GetCardDeckAmount(input *InputListCards) *uint32 {
+
+	var total uint32
+
+	db := r.db.Model(&model.GraphCardsBelongToDecks{})
+
+	db.Debug().Select(`
+		COUNT(DISTINCT deck_id)
+	`).Where(`
+		card_id = ?
+	`, input.CardID).Find(&total)
 
 	return &total
 }
@@ -57,6 +74,42 @@ func (r *repository) ListCardsRepository(input *InputListCards) *[]model.ModelLi
 		mv_top_cards.amount DESC,
 		mv_top_cards.card_id ASC
 	`).Limit(input.Limit).Offset(input.Offset).Find(&cards)
+
+	return &cards
+}
+
+func (r *repository) ListRelatedCardsRepository(input *InputListCards) *[]model.ModelListCardStats {
+
+	var cards []model.ModelListCardStats
+
+	db := r.db
+
+	db.Debug().Raw(`
+		SELECT
+			a.card_id AS id,
+			e.name AS label,
+			CONCAT('/cards/', CONVERT(a.card_id, char)) AS url,
+			(CASE WHEN ISNULL(ban.card_id) THEN 3 ELSE ban.status END) AS limitation,
+			COUNT(a.amount) AS amount,
+			AVG(a.amount) AS average
+		FROM (
+			SELECT
+				g.card_id,
+				COUNT(g.card_id) AS amount
+			FROM graph_cards_belong_to_decks g
+				WHERE g.card_id != ? AND EXISTS(
+					SELECT deck_id FROM graph_cards_belong_to_decks
+					WHERE card_id = ? AND deck_id = g.deck_id
+					GROUP BY deck_id, card_id
+				)
+				GROUP BY g.card_id, g.deck_id
+		) a
+		JOIN entity_cards e ON e.id = a.card_id
+		LEFT OUTER JOIN graph_cards_belong_to_banlists AS ban ON ban.card_id = a.card_id AND ban.banlist_id = ?
+			GROUP BY a.card_id, ban.status
+			ORDER BY amount DESC, average DESC, a.card_id ASC
+			LIMIT ?, ?;
+	`, input.CardID, input.CardID, util.GodotEnv("LAST_BANLIST"), input.Offset, input.Limit).Find(&cards)
 
 	return &cards
 }
