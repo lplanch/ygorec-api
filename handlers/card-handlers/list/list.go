@@ -19,7 +19,7 @@ func NewHandlerListCards(service listCards.Service) *handler {
 
 func (h *handler) ListCardsHandler(ctx *gin.Context) {
 
-	input := listCards.InputListCards{Limit: 20, Offset: 0, Banlist: ""}
+	input := listCards.InputListCards{Limit: 20, Offset: 0}
 
 	if len(ctx.Query("limit")) > 0 {
 		input.Limit, _ = strconv.Atoi(ctx.Query("limit"))
@@ -29,6 +29,9 @@ func (h *handler) ListCardsHandler(ctx *gin.Context) {
 	}
 	if len(ctx.Query("banlist")) > 0 {
 		input.Banlist = ctx.Query("banlist")
+	}
+	if len(ctx.Query("card_id")) > 0 {
+		input.CardID, _ = strconv.Atoi(ctx.Query("card_id"))
 	}
 
 	err := util.Validate(&input)
