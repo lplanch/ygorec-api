@@ -68,7 +68,7 @@ async def main() -> int:
     print('Refreshing top related cards...')
     print('To refresh: %s' % len(card_ids))
 
-    iterables = [card_ids[n::50] for n in range(50)]
+    iterables = [card_ids[n::1] for n in range(1)]
     for selected_card_ids in zip(*iterables):
         print(selected_card_ids)
         tasks = []
