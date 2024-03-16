@@ -8,7 +8,7 @@ type ModelCard struct {
 	Attribute  string
 	Types      []string
 	Race       string
-	Archetypes []string
+	Archetypes []ModelArchetype
 	Atk        int64
 	Def        int64
 	Level      string

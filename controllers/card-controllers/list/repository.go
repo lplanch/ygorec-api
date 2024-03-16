@@ -42,10 +42,13 @@ func (r *repository) GetCardDeckAmount(input *InputListCards) *uint32 {
 
 	db := r.db.Model(&model.GraphCardsBelongToDecks{})
 
-	db.Debug().Select(`
-		COUNT(DISTINCT deck_id)
-	`).Where(`
-		card_id = ?
+	db.Debug().Raw(`
+		SELECT COUNT(*) FROM (
+			SELECT COUNT(*)
+			FROM graph_cards_belong_to_decks
+			WHERE card_id = ?
+			GROUP BY deck_id
+		) a;
 	`, input.CardID).Find(&total)
 
 	return &total

@@ -7,6 +7,7 @@ import (
 )
 
 type Repository interface {
+	GetArchetypeFullName(input *InputServiceGetArchetype) *string
 	GetArchetypeDeckAmount(input *InputServiceGetArchetype) *uint32
 	GetArchetypeInputServiceRepository(input *InputGetArchetype) (*InputServiceGetArchetype, string)
 	GetArchetypeCardsRepository(input *InputServiceGetArchetype) *[]model.ModelListCardStats
@@ -19,6 +20,21 @@ type repository struct {
 
 func NewRepositoryGet(db *gorm.DB) *repository {
 	return &repository{db: db}
+}
+
+func (r *repository) GetArchetypeFullName(input *InputServiceGetArchetype) *string {
+
+	var value string
+
+	db := r.db.Model(&model.EnumArchetype{})
+
+	db.Debug().Select(`
+		value
+	`).Where(`
+		id = ?
+	`, input.ID).Find(&value)
+
+	return &value
 }
 
 func (r *repository) GetArchetypeDeckAmount(input *InputServiceGetArchetype) *uint32 {

@@ -26,6 +26,7 @@ func (s *service) GetArchetypeIDFromNameService(input *InputGetArchetype) (*Inpu
 func (s *service) GetArchetypeService(input *InputServiceGetArchetype) *model.ModelFullListArchetypeCardStats {
 
 	resultFullListCards := &model.ModelFullListArchetypeCardStats{
+		Label:          *s.repository.GetArchetypeFullName(input),
 		DeckAmount:     *s.repository.GetArchetypeDeckAmount(input),
 		ArchetypeCards: *s.repository.GetArchetypeCardsRepository(input),
 		OtherCards:     *s.repository.GetArchetypeOtherCardsRepository(input),

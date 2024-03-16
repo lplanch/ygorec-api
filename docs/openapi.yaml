@@ -342,6 +342,10 @@ paths:
                                     Data:
                                         type: object
                                         properties:
+                                            Label:
+                                                type: string
+                                                example: "Dark World"
+                                                description: Full name of the archetype
                                             DeckAmount:
                                                 type: integer
                                                 example: 238319
@@ -357,6 +361,7 @@ paths:
                                                 items:
                                                     $ref: "#/components/schemas/CardList"
                                         required:
+                                            - Label
                                             - DeckAmount
                                             - ArchetypeCards
                                             - OtherCards
@@ -481,7 +486,7 @@ components:
                 Archetypes:
                     type: array
                     items:
-                        type: string
+                        $ref: "#/components/schemas/Archetype"
                 Atk:
                     type: integer
                     example: 1200

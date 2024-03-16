@@ -10,6 +10,7 @@ type ModelArchetype struct {
 }
 
 type ModelFullListArchetypeCardStats struct {
+	Label          string
 	DeckAmount     uint32
 	ArchetypeCards []ModelListCardStats
 	OtherCards     []ModelListCardStats

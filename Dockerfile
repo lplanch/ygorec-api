@@ -47,7 +47,6 @@ ARG DB_PASSWORD=123456
 ARG DB_NAME=railway
 
 RUN make upsert-data
-RUN make generate-views
 RUN make goprod
 EXPOSE $PORT
-CMD ["sh", "-c", "./main"]
+CMD ["sh", "-c", "./run_server.sh"]
