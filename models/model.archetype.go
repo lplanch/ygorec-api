@@ -15,3 +15,9 @@ type ModelFullListArchetypeCardStats struct {
 	ArchetypeCards []ModelListCardStats
 	OtherCards     []ModelListCardStats
 }
+
+type ModelListArchetype struct {
+	ID    uint64
+	Label string
+	Url   string
+}
