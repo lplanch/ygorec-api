@@ -373,6 +373,50 @@ paths:
                 "500":
                     description: Could not get API imported data
     ############################
+    ## SEARCH ARCHETYPES ENDPOINT
+    ############################
+    /archetypes/typeahead:
+        get:
+            tags:
+                - Archetypes
+            summary: Search archetypes for autocompletion
+            parameters:
+                - in: query
+                  name: q
+                  schema:
+                      type: string
+                      example: "dark world"
+                  required: true
+                  description: Search string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    StatusCode:
+                                        type: integer
+                                        format: number
+                                        example: 200
+                                    Method:
+                                        type: string
+                                        example: GET
+                                    Message:
+                                        type: string
+                                    Data:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/ArchetypeMini"
+                                required:
+                                    - StatusCode
+                                    - Method
+                                    - Message
+                                    - Data
+                "500":
+                    description: Could not get API imported data
+    ############################
     ## GET BANLISTS ENDPOINT
     ############################
     /banlists:
@@ -527,6 +571,23 @@ components:
                     type: string
                     example: "/cards/32864"
                     description: Endpoint of the card
+            required:
+                - ID
+                - Label
+                - Url
+        ArchetypeMini:
+            properties:
+                ID:
+                    type: integer
+                    example: 6
+                    description: Archetype ID
+                Label:
+                    type: string
+                    example: "Dark World"
+                Url:
+                    type: string
+                    example: "/archetypes/32864"
+                    description: Endpoint of the archetype
             required:
                 - ID
                 - Label
