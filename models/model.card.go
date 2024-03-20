@@ -3,6 +3,7 @@ package model
 type ModelCard struct {
 	ID         uint64
 	Name       string
+	Alias      []ModelListCard
 	Limitation uint8
 	Desc       string
 	Attribute  string
@@ -18,6 +19,7 @@ type ModelCard struct {
 type ModelDbCard struct {
 	ID         uint64
 	Name       string
+	Alias      string
 	Limitation uint8
 	Desc       string
 	Attribute  string

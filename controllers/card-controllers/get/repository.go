@@ -9,6 +9,7 @@ import (
 type Repository interface {
 	GetCardRepository(input *model.EntityCard) (*model.EntityCard, string)
 	SanitizeCardRepository(input *model.EntityCard) (*model.ModelDbCard, string)
+	GetListCardAlias(alias_ids []string) *[]model.ModelListCard
 	GetCardArchetypes(archetype_names []string) *[]model.ModelArchetype
 }
 
@@ -49,6 +50,12 @@ func (r *repository) SanitizeCardRepository(input *model.EntityCard) (*model.Mod
 	getCard := db.Debug().Model(&input).Select(`
 		entity_cards.id,
 		entity_cards.name,
+		(
+			CASE WHEN ISNULL(p_ec.id)
+			THEN (SELECT GROUP_CONCAT(ec.id) FROM entity_cards ec WHERE ec.alias = entity_cards.id)
+			ELSE (SELECT GROUP_CONCAT(ec.id) FROM entity_cards ec WHERE entity_cards.id != ec.id AND (p_ec.id = ec.id OR ec.alias = p_ec.id))
+			END
+		) AS alias,
 		(CASE WHEN ISNULL(b.card_id) THEN 3 ELSE b.status END) AS limitation,
 		entity_cards.desc,
 		(SELECT enum_attributes.value FROM enum_attributes WHERE entity_cards.attribute = enum_attributes.id LIMIT 1) AS attribute,
@@ -59,6 +66,8 @@ func (r *repository) SanitizeCardRepository(input *model.EntityCard) (*model.Mod
 		entity_cards.def,
 		(SELECT enum_levels.value FROM enum_levels WHERE entity_cards.level = enum_levels.id LIMIT 1) AS level,
 		(SELECT GROUP_CONCAT(enum_categories.value) FROM enum_categories WHERE entity_cards.category & enum_categories.id) AS categories
+	`).Joins(`
+		LEFT OUTER JOIN entity_cards AS p_ec ON p_ec.id = entity_cards.alias
 	`).Joins(`
 		LEFT OUTER JOIN graph_cards_belong_to_banlists AS b ON b.card_id = entity_cards.id AND b.banlist_id = ?
 	`, util.GodotEnv("LAST_BANLIST")).Where("entity_cards.id = ?", input.ID).Find(&card)
@@ -71,6 +80,24 @@ func (r *repository) SanitizeCardRepository(input *model.EntityCard) (*model.Mod
 	}
 
 	return &card, <-errorCode
+}
+
+func (r *repository) GetListCardAlias(alias_ids []string) *[]model.ModelListCard {
+	var cards []model.ModelListCard
+
+	db := r.db.Model(&model.EntityCard{})
+
+	db.Debug().Select(`
+		id,
+		name AS label,
+		CONCAT('/cards/', CONVERT(id, char)) AS url
+	`).Where(`
+		id IN ?
+	`, alias_ids).Order(`
+		alias
+	`).Find(&cards)
+
+	return &cards
 }
 
 func (r *repository) GetCardArchetypes(archetype_names []string) *[]model.ModelArchetype {
