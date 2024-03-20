@@ -29,7 +29,9 @@ func (r *repository) SearchCardRepository(input *InputSearchCard) *[]model.Model
 		id,
 		name AS label,
 		CONCAT('/cards/', CONVERT(id, char)) AS url
-	`).Where("name LIKE ?", "%"+input.Q+"%").Clauses(
+	`).Where(`
+		alias = 0 AND name LIKE ?
+	`, "%"+input.Q+"%").Clauses(
 		util.OrderByCase{
 			Column: clause.Column{Name: "name"},
 			Values: map[string]int{

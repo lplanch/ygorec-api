@@ -508,6 +508,10 @@ components:
                 Name:
                     type: string
                     example: "The 13th Grave"
+                Alias:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/CardMini"
                 Limitation:
                     type: integer
                     example: 3
@@ -548,6 +552,7 @@ components:
             required:
                 - ID
                 - Name
+                - Alias
                 - Limitation
                 - Desc
                 - Attribute
