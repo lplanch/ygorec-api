@@ -30,12 +30,13 @@ func AutoMigrateProcedureMvTopCards(db *gorm.DB) {
 					AVG(s.amount) AS average
 				FROM (
 					SELECT
-						g.card_id,
+						(CASE WHEN ISNULL(ec.id) THEN g.card_id ELSE ec.alias END) AS card_id,
 						g.deck_id,
 						COUNT(*) AS amount
 					FROM graph_cards_belong_to_decks g
 					JOIN entity_decks d ON g.deck_id = d.id
-					GROUP BY g.card_id, g.deck_id
+					LEFT OUTER JOIN entity_cards ec ON ec.id = g.card_id AND ec.alias != 0
+					GROUP BY card_id, g.deck_id
 				) s
 				GROUP BY s.card_id;
 			ELSE
@@ -48,11 +49,12 @@ func AutoMigrateProcedureMvTopCards(db *gorm.DB) {
 					AVG(s.amount) AS average
 				FROM (
 					SELECT
-						g.card_id,
+						(CASE WHEN ISNULL(ec.id) THEN g.card_id ELSE ec.alias END) AS card_id,
 						g.deck_id,
 						COUNT(*) AS amount
 					FROM graph_cards_belong_to_decks g
 					JOIN entity_decks d ON g.deck_id = d.id AND d.updated_at >= banlist_id
+					LEFT OUTER JOIN entity_cards ec ON ec.id = g.card_id AND ec.alias != 0
 					GROUP BY g.card_id, g.deck_id
 				) s
 				GROUP BY s.card_id;
