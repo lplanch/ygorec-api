@@ -1,9 +1,10 @@
 ## ygorec-api
 
-ygorec-api working like edhrec.com but for yu-gi-oh!
-api available here: https://ygorec.up.railway.app/
-website with front-end available here: https://okayami.github.io/ygorec-frontend/
-openapi documentation available here: https://lplanch.github.io/ygorec-api/
+#### ygorec-api working like edhrec.com but for yu-gi-oh!
+
+API available here: https://ygorec.up.railway.app/<br>
+Website with front-end available here: https://okayami.github.io/ygorec-frontend/<br>
+OpenAPI documentation available here: https://lplanch.github.io/ygorec-api/<br>
 
 ### Scrapping
 
