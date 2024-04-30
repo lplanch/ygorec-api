@@ -8,7 +8,7 @@ openapi documentation available here: https://lplanch.github.io/ygorec-api/
 ### Scrapping
 
 We scrap the data for the decks from one website for now, but soon more! 
-- [x] [https://](https://ygoprodeck.com/)
+- [x] [ygoprodeck.com](https://ygoprodeck.com/)
 
 ### Author
 
